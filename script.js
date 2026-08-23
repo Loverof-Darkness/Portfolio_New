@@ -215,42 +215,186 @@ function resetHeroTyping() {
   });
 }
 
+function injectExperienceSection() {
+  if (document.getElementById('experience')) return;
+
+  const content = document.querySelector('.content');
+  if (!content) return;
+
+  const experience = document.createElement('section');
+  experience.id = 'experience';
+  experience.className = 'experience-panel';
+  experience.innerHTML = `
+    <div class="experience-header-wrap">
+      <p class="experience-kicker">CAREER TIMELINE</p>
+      <h2 class="experience-heading">PROFESSIONAL EXPERIENCE</h2>
+      <p class="experience-subtitle">From the beginning of my analytical career to my current role in pharmaceutical research &amp; development.</p>
+    </div>
+
+    <div class="career-track" aria-label="Career timeline from September 2023 to present">
+      <div class="career-track-line"></div>
+      <div class="career-track-progress"></div>
+      <div class="career-start"><span class="career-dot"></span><strong>SEP 2023</strong><small>START</small></div>
+      <div class="career-transition"><span class="career-dot"></span><strong>AUG 2025</strong><small>ROLE TRANSITION</small></div>
+      <div class="career-now" style="--now: 100%"><span class="career-dot pulse"></span><strong>NOW</strong><small>VIATRIS</small></div>
+    </div>
+
+    <div class="experience-grid">
+      <article class="experience-card current">
+        <div class="experience-card-top">
+          <span class="experience-status">CURRENT ROLE</span>
+          <time>Aug 2025 – Present</time>
+        </div>
+        <h3>Research Scientist</h3>
+        <p class="experience-company">VIATRIS</p>
+        <ul>
+          <li>Responsible for analytical method development for complex pharmaceutical formulations, including peptide-based formulations.</li>
+          <li>Conduct pre-validation studies to assess analytical method performance and readiness for validation.</li>
+          <li>Apply HPLC/UPLC, IR, UV, DSC and ion chromatography techniques to support analytical development and characterization activities.</li>
+          <li>Work within pharmaceutical quality and compliance expectations, with emphasis on scientific documentation and reproducible analytical results.</li>
+        </ul>
+      </article>
+
+      <article class="experience-card previous">
+        <div class="experience-card-top">
+          <span class="experience-status">PREVIOUS ROLE</span>
+          <time>Sep 2023 – Jul 2025</time>
+        </div>
+        <h3>Trainee – Analytical Research &amp; Development</h3>
+        <p class="experience-company">ENDO PHARMACEUTICALS</p>
+        <ul>
+          <li>Performed characterization and routine analysis of APIs, finished products and injectable samples using HPLC and IR.</li>
+          <li>Supported analytical method development activities for pharmaceutical samples and products.</li>
+          <li>Performed routine laboratory analysis, handled analytical standards and columns, and maintained laboratory documentation.</li>
+          <li>Worked in accordance with GLP, compliance requirements and laboratory procedures.</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="experience-footer">
+      <span class="live-pulse"></span>
+      <span>CAREER IN MOTION</span>
+      <strong class="experience-duration">Calculating current trajectory…</strong>
+    </div>
+  `;
+
+  content.appendChild(experience);
+
+  const style = document.createElement('style');
+  style.id = 'experience-styles';
+  style.textContent = `
+    .experience-panel{
+      min-height:100vh;height:100vh;overflow:auto;padding:50px 0 42px;scroll-snap-align:start;scroll-snap-stop:always;
+      display:flex;flex-direction:column;justify-content:flex-start;gap:26px;
+    }
+    body.home-active .experience-panel,body.about-active .experience-panel{display:none!important}
+    body.experience-active .hero,body.experience-active .about-panel{display:none!important}
+    .experience-header-wrap{max-width:980px}
+    .experience-kicker{margin:0 0 8px;color:#00e5ff;font:800 13px ui-monospace,monospace;letter-spacing:.24em}
+    .experience-heading{margin:0;font-size:clamp(58px,7vw,96px);line-height:.9;font-weight:900;letter-spacing:-.055em;background:linear-gradient(90deg,#fff,#00e5ff 48%,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 28px rgba(0,229,255,.15)}
+    .experience-subtitle{margin:14px 0 0;max-width:820px;color:#cbd5e1;font-size:18px;font-weight:600;line-height:1.55}
+    .career-track{position:relative;height:92px;margin:4px 8px 0;display:grid;grid-template-columns:1fr 1fr 1fr;align-items:start}
+    .career-track-line,.career-track-progress{position:absolute;left:1%;right:1%;top:27px;height:4px;border-radius:5px}
+    .career-track-line{background:rgba(113,130,150,.22);box-shadow:0 0 10px rgba(0,0,0,.35)}
+    .career-track-progress{right:auto;width:calc(var(--career-progress,100%) - 1%);background:linear-gradient(90deg,#00e5ff,#8b5cf6,#ff2bd6);box-shadow:0 0 18px rgba(0,229,255,.32),0 0 24px rgba(139,92,246,.2)}
+    .career-start,.career-transition,.career-now{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px}
+    .career-dot{width:18px;height:18px;border-radius:50%;margin-top:18px;border:3px solid #05070b;background:#00e5ff;box-shadow:0 0 0 4px rgba(0,229,255,.08),0 0 18px rgba(0,229,255,.75)}
+    .career-transition .career-dot{background:#8b5cf6;border-color:#b8a0ff;box-shadow:0 0 0 4px rgba(139,92,246,.08),0 0 18px rgba(139,92,246,.7)}
+    .career-now .career-dot{background:#ff2bd6;border-color:#ffc2f5;box-shadow:0 0 0 4px rgba(255,43,214,.1),0 0 20px rgba(255,43,214,.85)}
+    .career-dot.pulse{animation:careerPulse 1.8s ease-in-out infinite}
+    .career-start strong,.career-transition strong,.career-now strong{font:900 13px ui-monospace,monospace;color:#fff;letter-spacing:.08em}
+    .career-start small,.career-transition small,.career-now small{color:#9fb0c1;font:700 10px ui-monospace,monospace;letter-spacing:.12em}
+    .experience-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+    .experience-card{position:relative;padding:28px 30px;background:rgba(3,9,14,.74);border:1px solid rgba(0,229,255,.34);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:inset 0 0 35px rgba(0,229,255,.02),0 0 24px rgba(0,0,0,.28);clip-path:polygon(0 0,98.8% 0,100% 10%,100% 90%,98.8% 100%,0 100%,1.2% 90%,1.2% 10%)}
+    .experience-card.current{border-color:rgba(0,229,255,.58);box-shadow:inset 0 0 40px rgba(0,229,255,.04),0 0 28px rgba(0,229,255,.07)}
+    .experience-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .experience-status{color:#00e5ff;font:800 11px ui-monospace,monospace;letter-spacing:.17em}
+    .experience-card time{color:#cbd5e1;font:700 12px ui-monospace,monospace}
+    .experience-card h3{margin:0;color:#fff;font-size:clamp(28px,3vw,40px);font-weight:900;line-height:1.08;letter-spacing:-.025em}
+    .experience-company{margin:7px 0 18px;color:#9bdfff;font:900 16px ui-monospace,monospace;letter-spacing:.14em}
+    .experience-card ul{margin:0;padding-left:21px;color:#d7e0eb;display:grid;gap:12px}
+    .experience-card li{font-size:15px;font-weight:600;line-height:1.48}
+    .experience-footer{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:4px;color:#9fb0c1;font:800 11px ui-monospace,monospace;letter-spacing:.16em}
+    .experience-footer strong{margin-left:auto;color:#dce7f3;font-size:12px;letter-spacing:.06em}
+    .live-pulse{width:8px;height:8px;border-radius:50%;background:#00ffb3;box-shadow:0 0 12px rgba(0,255,179,.8);animation:careerPulse 1.4s ease-in-out infinite}
+    @keyframes careerPulse{0%,100%{transform:scale(.9);opacity:.72;box-shadow:0 0 10px rgba(0,229,255,.4)}50%{transform:scale(1.18);opacity:1;box-shadow:0 0 24px rgba(0,229,255,.95)}}
+    @media(max-width:1000px){.experience-panel{padding:38px 0}.experience-heading{font-size:64px}.experience-subtitle{font-size:16px}.experience-card h3{font-size:30px}.experience-card li{font-size:14px}}
+    @media(max-width:760px){.experience-panel{height:auto;min-height:100vh;padding:30px 0;gap:22px}.experience-heading{font-size:46px}.experience-subtitle{font-size:15px}.career-track{height:78px}.career-track-line,.career-track-progress{top:23px;height:3px}.career-dot{width:15px;height:15px;margin-top:17px}.experience-grid{grid-template-columns:1fr}.experience-card{padding:22px 20px}.experience-card h3{font-size:27px}.experience-card li{font-size:14px}.experience-footer{margin-top:0;flex-wrap:wrap}.experience-footer strong{margin-left:0;width:100%}}
+  `;
+  document.head.appendChild(style);
+}
+
+function updateExperienceProgress() {
+  const start = new Date('2023-09-01T00:00:00+05:30').getTime();
+  const transition = new Date('2025-08-01T00:00:00+05:30').getTime();
+  const now = Date.now();
+  const total = Math.max(1, now - start);
+  const progress = Math.min(100, Math.max(0, ((now - start) / total) * 100));
+  document.documentElement.style.setProperty('--career-progress', `${progress}%`);
+
+  const durationEl = document.querySelector('.experience-duration');
+  if (durationEl) {
+    const months = Math.max(0, Math.floor((now - start) / (1000 * 60 * 60 * 24 * 30.4375)));
+    const years = Math.floor(months / 12);
+    const remainingMonths = months % 12;
+    durationEl.textContent = `${years}y ${remainingMonths}m total • Started Sep 2023 • Current role since Aug 2025`;
+  }
+
+  const transitionNode = document.querySelector('.career-transition');
+  if (transitionNode) {
+    const phase = Math.min(100, Math.max(0, ((transition - start) / total) * 100));
+    transitionNode.style.transform = `translateX(${Math.max(-8, Math.min(8, phase - 50))}px)`;
+  }
+}
+
 function setView(view) {
-  const isAbout = view === 'about';
-  document.body.classList.toggle('home-active', !isAbout);
+  const allowed = ['home', 'about', 'experience'];
+  const activeView = allowed.includes(view) ? view : 'home';
+  const isAbout = activeView === 'about';
+  const isExperience = activeView === 'experience';
+  document.body.classList.toggle('home-active', activeView === 'home');
   document.body.classList.toggle('about-active', isAbout);
+  document.body.classList.toggle('experience-active', isExperience);
   document.querySelectorAll('.sidebar nav a').forEach((link) => {
-    link.classList.toggle('active', link.getAttribute('href') === `#${view}`);
+    link.classList.toggle('active', link.getAttribute('href') === `#${activeView}`);
   });
+  if (isExperience) {
+    injectExperienceSection();
+    updateExperienceProgress();
+  }
+}
+
+function navigateToView(event, view) {
+  const link = event.currentTarget;
+  if (link.getAttribute('href') !== `#${view}`) return;
+  event.preventDefault();
+  history.replaceState(null, '', `#${view}`);
+  setView(view);
+  document.getElementById(view)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function onHomeClick(event) {
-  const home = event.currentTarget;
-  if (home.getAttribute('href') === '#home') {
-    event.preventDefault();
-    history.replaceState(null, '', '#home');
-    setView('home');
-    document.getElementById('home')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    resetHeroTyping();
-  }
+  navigateToView(event, 'home');
+  if (event.defaultPrevented) resetHeroTyping();
 }
 
 function onAboutClick(event) {
-  const about = event.currentTarget;
-  if (about.getAttribute('href') === '#about') {
-    event.preventDefault();
-    history.replaceState(null, '', '#about');
-    setView('about');
-    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
+  navigateToView(event, 'about');
 }
 
-function setDefaultHome() {
-  if (window.location.hash !== '#home') {
-    history.replaceState(null, '', `${window.location.pathname}${window.location.search}#home`);
+function onExperienceClick(event) {
+  navigateToView(event, 'experience');
+}
+
+function setDefaultView() {
+  const hash = window.location.hash.replace('#', '');
+  const view = ['about','experience','home'].includes(hash) ? hash : 'home';
+  if (window.location.hash !== `#${view}`) {
+    history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${view}`);
   }
-  setView('home');
-  document.getElementById('home')?.scrollIntoView({ behavior: 'auto', block: 'start' });
+  setView(view);
+  if (view === 'experience') injectExperienceSection();
+  document.getElementById(view)?.scrollIntoView({ behavior: 'auto', block: 'start' });
 }
 
 function setHeroViewport() {
@@ -271,6 +415,7 @@ function setHeroViewport() {
 window.addEventListener('resize', () => {
   resize();
   setHeroViewport();
+  if (document.body.classList.contains('experience-active')) updateExperienceProgress();
 }, { passive: true });
 window.addEventListener('pointermove', (event) => {
   pointer.x = event.clientX;
@@ -291,9 +436,12 @@ document.addEventListener('visibilitychange', () => {
 
 document.querySelector('.sidebar nav a[href="#home"]')?.addEventListener('click', onHomeClick);
 document.querySelector('.sidebar nav a[href="#about"]')?.addEventListener('click', onAboutClick);
+document.querySelector('.sidebar nav a[href="#experience"]')?.addEventListener('click', onExperienceClick);
 
+injectExperienceSection();
 resize();
 setHeroViewport();
 raf = requestAnimationFrame(frame);
-setDefaultHome();
+setDefaultView();
 resetHeroTyping();
+updateExperienceProgress();
