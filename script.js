@@ -5,8 +5,8 @@ const palette = [
   [0, 229, 255],   // cyan
   [139, 92, 246],  // violet
   [255, 43, 214],  // pink
-  [0, 255, 179],   // green
-  [59, 130, 246],  // blue
+  [0, 255, 179],   // emerald
+  [59, 130, 246],  // electric blue
 ];
 
 let width = 0;
@@ -28,7 +28,8 @@ function resize() {
   canvas.style.height = `${height}px`;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  const target = Math.min(110, Math.max(42, Math.floor((width * height) / 18000)));
+  // Denser molecular field: keeps the whole viewport alive without turning into noise.
+  const target = Math.min(320, Math.max(150, Math.floor((width * height) / 6500)));
   nodes = Array.from({ length: target }, createNode);
 }
 
@@ -37,11 +38,11 @@ function createNode() {
   return {
     x: Math.random() * width,
     y: Math.random() * height,
-    vx: (Math.random() - 0.5) * 0.22,
-    vy: (Math.random() - 0.5) * 0.22,
-    radius: 1.4 + Math.random() * 2.6,
+    vx: (Math.random() - 0.5) * 0.28,
+    vy: (Math.random() - 0.5) * 0.28,
+    radius: 1.1 + Math.random() * 2.2,
     pulse: Math.random() * Math.PI * 2,
-    pulseSpeed: 0.0012 + Math.random() * 0.0018,
+    pulseSpeed: 0.0011 + Math.random() * 0.002,
     color: c,
   };
 }
@@ -51,7 +52,7 @@ function rgba(rgb, alpha) {
 }
 
 function wrap(node) {
-  const pad = 50;
+  const pad = 60;
   if (node.x < -pad) node.x = width + pad;
   if (node.x > width + pad) node.x = -pad;
   if (node.y < -pad) node.y = height + pad;
@@ -65,7 +66,7 @@ function drawBackground() {
 }
 
 function drawBonds() {
-  const maxDistance = Math.min(180, Math.max(110, Math.min(width, height) * 0.18));
+  const maxDistance = Math.min(135, Math.max(78, Math.min(width, height) * 0.115));
 
   for (let i = 0; i < nodes.length; i += 1) {
     const a = nodes[i];
@@ -77,13 +78,13 @@ function drawBonds() {
       if (dist > maxDistance) continue;
 
       const proximity = 1 - dist / maxDistance;
-      const alpha = proximity * proximity * 0.38;
-      const mix = palette[(i + j) % palette.length];
+      const alpha = proximity * proximity * 0.28;
+      const mix = palette[(i * 7 + j * 3) % palette.length];
 
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
-      ctx.lineWidth = 0.65 + proximity * 0.8;
+      ctx.lineWidth = 0.45 + proximity * 0.85;
       ctx.strokeStyle = rgba(mix, alpha);
       ctx.stroke();
     }
@@ -94,22 +95,22 @@ function drawAtoms(now) {
   for (const node of nodes) {
     const wave = (Math.sin(now * node.pulseSpeed + node.pulse) + 1) / 2;
     const glow = 0.55 + wave * 0.45;
-    const r = node.radius + wave * 0.8;
+    const r = node.radius + wave * 0.7;
 
-    const gradient = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, r * 7);
-    gradient.addColorStop(0, rgba(node.color, 0.28 * glow));
-    gradient.addColorStop(0.35, rgba(node.color, 0.08 * glow));
+    const gradient = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, r * 8);
+    gradient.addColorStop(0, rgba(node.color, 0.26 * glow));
+    gradient.addColorStop(0.28, rgba(node.color, 0.085 * glow));
     gradient.addColorStop(1, rgba(node.color, 0));
 
     ctx.beginPath();
     ctx.fillStyle = gradient;
-    ctx.arc(node.x, node.y, r * 7, 0, Math.PI * 2);
+    ctx.arc(node.x, node.y, r * 8, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.beginPath();
-    ctx.fillStyle = rgba(node.color, 0.72 + wave * 0.28);
-    ctx.shadowColor = rgba(node.color, 0.85);
-    ctx.shadowBlur = 10 + wave * 10;
+    ctx.fillStyle = rgba(node.color, 0.68 + wave * 0.32);
+    ctx.shadowColor = rgba(node.color, 0.9);
+    ctx.shadowBlur = 8 + wave * 12;
     ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
