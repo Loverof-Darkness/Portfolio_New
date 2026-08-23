@@ -215,13 +215,33 @@ function resetHeroTyping() {
   });
 }
 
+function setView(view) {
+  const isAbout = view === 'about';
+  document.body.classList.toggle('home-active', !isAbout);
+  document.body.classList.toggle('about-active', isAbout);
+  document.querySelectorAll('.sidebar nav a').forEach((link) => {
+    link.classList.toggle('active', link.getAttribute('href') === `#${view}`);
+  });
+}
+
 function onHomeClick(event) {
   const home = event.currentTarget;
   if (home.getAttribute('href') === '#home') {
     event.preventDefault();
     history.replaceState(null, '', '#home');
+    setView('home');
     document.getElementById('home')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     resetHeroTyping();
+  }
+}
+
+function onAboutClick(event) {
+  const about = event.currentTarget;
+  if (about.getAttribute('href') === '#about') {
+    event.preventDefault();
+    history.replaceState(null, '', '#about');
+    setView('about');
+    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 
@@ -229,6 +249,7 @@ function setDefaultHome() {
   if (window.location.hash !== '#home') {
     history.replaceState(null, '', `${window.location.pathname}${window.location.search}#home`);
   }
+  setView('home');
   document.getElementById('home')?.scrollIntoView({ behavior: 'auto', block: 'start' });
 }
 
@@ -269,6 +290,7 @@ document.addEventListener('visibilitychange', () => {
 });
 
 document.querySelector('.sidebar nav a[href="#home"]')?.addEventListener('click', onHomeClick);
+document.querySelector('.sidebar nav a[href="#about"]')?.addEventListener('click', onAboutClick);
 
 resize();
 setHeroViewport();
