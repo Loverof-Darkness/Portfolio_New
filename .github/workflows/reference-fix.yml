@@ -2,7 +2,7 @@ name: Fix reference build
 on:
   push:
     paths:
-      - 'docs/index.html'
+      - 'docs/**'
 permissions:
   contents: write
 jobs:
