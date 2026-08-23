@@ -225,7 +225,32 @@ function onHomeClick(event) {
   }
 }
 
-window.addEventListener('resize', resize, { passive: true });
+function setDefaultHome() {
+  if (window.location.hash !== '#home') {
+    history.replaceState(null, '', `${window.location.pathname}${window.location.search}#home`);
+  }
+  document.getElementById('home')?.scrollIntoView({ behavior: 'auto', block: 'start' });
+}
+
+function setHeroViewport() {
+  const hero = document.querySelector('.hero');
+  const content = document.querySelector('.content');
+  if (!hero || !content) return;
+
+  if (window.innerWidth > 760) {
+    const styles = getComputedStyle(content);
+    const topPad = parseFloat(styles.paddingTop) || 0;
+    const bottomPad = parseFloat(styles.paddingBottom) || 0;
+    hero.style.minHeight = `${Math.max(520, window.innerHeight - topPad - bottomPad)}px`;
+  } else {
+    hero.style.minHeight = '';
+  }
+}
+
+window.addEventListener('resize', () => {
+  resize();
+  setHeroViewport();
+}, { passive: true });
 window.addEventListener('pointermove', (event) => {
   pointer.x = event.clientX;
   pointer.y = event.clientY;
@@ -245,14 +270,8 @@ document.addEventListener('visibilitychange', () => {
 
 document.querySelector('.sidebar nav a[href="#home"]')?.addEventListener('click', onHomeClick);
 
-function setDefaultHome() {
-  if (window.location.hash !== '#home') {
-    history.replaceState(null, '', `${window.location.pathname}${window.location.search}#home`);
-  }
-  document.getElementById('home')?.scrollIntoView({ behavior: 'auto', block: 'start' });
-}
-
 resize();
+setHeroViewport();
 raf = requestAnimationFrame(frame);
 setDefaultHome();
 resetHeroTyping();
