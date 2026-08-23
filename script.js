@@ -2,11 +2,11 @@ const canvas = document.getElementById('molecule-bg');
 const ctx = canvas.getContext('2d');
 
 const palette = [
-  [0, 229, 255],   // cyan
-  [139, 92, 246],  // violet
-  [255, 43, 214],  // pink
-  [0, 255, 179],   // emerald
-  [59, 130, 246],  // electric blue
+  [0, 229, 255],
+  [139, 92, 246],
+  [255, 43, 214],
+  [0, 255, 179],
+  [59, 130, 246],
 ];
 
 let width = 0;
@@ -28,8 +28,8 @@ function resize() {
   canvas.style.height = `${height}px`;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  // Denser molecular field: keeps the whole viewport alive without turning into noise.
-  const target = Math.min(320, Math.max(150, Math.floor((width * height) / 6500)));
+  // Extra-dense molecular field while keeping the motion smooth.
+  const target = Math.min(520, Math.max(220, Math.floor((width * height) / 4000)));
   nodes = Array.from({ length: target }, createNode);
 }
 
@@ -40,7 +40,7 @@ function createNode() {
     y: Math.random() * height,
     vx: (Math.random() - 0.5) * 0.28,
     vy: (Math.random() - 0.5) * 0.28,
-    radius: 1.1 + Math.random() * 2.2,
+    radius: 1.0 + Math.random() * 2.0,
     pulse: Math.random() * Math.PI * 2,
     pulseSpeed: 0.0011 + Math.random() * 0.002,
     color: c,
@@ -66,7 +66,7 @@ function drawBackground() {
 }
 
 function drawBonds() {
-  const maxDistance = Math.min(135, Math.max(78, Math.min(width, height) * 0.115));
+  const maxDistance = Math.min(118, Math.max(70, Math.min(width, height) * 0.1));
 
   for (let i = 0; i < nodes.length; i += 1) {
     const a = nodes[i];
@@ -85,10 +85,10 @@ function drawBonds() {
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
-      ctx.lineWidth = 0.7 + proximity * 1.05;
+      ctx.lineWidth = 0.65 + proximity * 0.95;
       ctx.strokeStyle = rgba(mix, alpha * brightness);
-      ctx.shadowColor = rgba(mix, 0.32 + proximity * 0.28);
-      ctx.shadowBlur = 4 + proximity * 6;
+      ctx.shadowColor = rgba(mix, 0.3 + proximity * 0.25);
+      ctx.shadowBlur = 4 + proximity * 5;
       ctx.stroke();
       ctx.shadowBlur = 0;
     }
@@ -99,11 +99,11 @@ function drawAtoms(now) {
   for (const node of nodes) {
     const wave = (Math.sin(now * node.pulseSpeed + node.pulse) + 1) / 2;
     const glow = 0.55 + wave * 0.45;
-    const r = node.radius + wave * 0.7;
+    const r = node.radius + wave * 0.65;
 
     const gradient = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, r * 8);
-    gradient.addColorStop(0, rgba(node.color, 0.26 * glow));
-    gradient.addColorStop(0.28, rgba(node.color, 0.085 * glow));
+    gradient.addColorStop(0, rgba(node.color, 0.24 * glow));
+    gradient.addColorStop(0.28, rgba(node.color, 0.075 * glow));
     gradient.addColorStop(1, rgba(node.color, 0));
 
     ctx.beginPath();
