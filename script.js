@@ -78,15 +78,19 @@ function drawBonds() {
       if (dist > maxDistance) continue;
 
       const proximity = 1 - dist / maxDistance;
-      const alpha = proximity * proximity * 0.28;
+      const alpha = 0.38 + proximity * 0.34;
       const mix = palette[(i * 7 + j * 3) % palette.length];
+      const brightness = 0.75 + proximity * 0.25;
 
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
-      ctx.lineWidth = 0.45 + proximity * 0.85;
-      ctx.strokeStyle = rgba(mix, alpha);
+      ctx.lineWidth = 0.7 + proximity * 1.05;
+      ctx.strokeStyle = rgba(mix, alpha * brightness);
+      ctx.shadowColor = rgba(mix, 0.32 + proximity * 0.28);
+      ctx.shadowBlur = 4 + proximity * 6;
       ctx.stroke();
+      ctx.shadowBlur = 0;
     }
   }
 }
