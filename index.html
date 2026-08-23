@@ -7,22 +7,93 @@
   <meta name="color-scheme" content="dark" />
   <meta name="description" content="Abhay Gupta — Research Scientist portfolio" />
   <title>Abhay Gupta — Research Scientist</title>
-  <link rel="stylesheet" href="./style.css?v=4" />
+  <link rel="stylesheet" href="./style.css?v=5" />
   <style>
     html, body { scroll-snap-type: y mandatory; }
     .content { margin-left: 250px; padding: 0 clamp(28px,4vw,70px); }
     .hero, .about-panel { min-height: 100vh; height: 100vh; scroll-snap-align: start; scroll-snap-stop: always; }
     .hero { overflow: hidden; }
-    .about-panel { display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+    .about-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 22px;
+      padding: 52px 0 40px;
+      overflow: auto;
+    }
     body.home-active .about-panel { display: none !important; }
     body.about-active .hero { display: none !important; }
-    .about-panel .metrics { margin-top: 0; }
+    .about-heading {
+      margin: 0;
+      font-size: clamp(46px, 6vw, 78px);
+      line-height: .95;
+      font-weight: 900;
+      letter-spacing: -.055em;
+      background: linear-gradient(90deg,#fff 0%,#00e5ff 48%,#8b5cf6 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 26px rgba(0,229,255,.14);
+    }
+    .about-profile-card {
+      position: relative;
+      min-height: 155px;
+      padding: 30px 34px;
+      border: 1px solid rgba(0,229,255,.52);
+      background: linear-gradient(135deg,rgba(2,16,22,.88),rgba(5,5,12,.78));
+      box-shadow: inset 0 0 35px rgba(0,229,255,.045),0 0 30px rgba(0,0,0,.32);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      clip-path: polygon(0 0,98.8% 0,100% 18%,100% 82%,98.8% 100%,0 100%,1.2% 82%,1.2% 18%);
+      overflow: hidden;
+    }
+    .about-profile-card::before {
+      content:"";
+      position:absolute;
+      inset:12px;
+      border:1px solid rgba(139,92,246,.16);
+      pointer-events:none;
+    }
+    .about-profile-label {
+      margin:0 0 10px;
+      color:#00e5ff;
+      font:800 12px ui-monospace,monospace;
+      letter-spacing:.22em;
+    }
+    .about-profile-title {
+      margin:0;
+      max-width:900px;
+      color:#f8fbff;
+      font-size:clamp(24px,3vw,36px);
+      line-height:1.15;
+      font-weight:800;
+      letter-spacing:-.02em;
+    }
+    .about-profile-title span {
+      background:linear-gradient(90deg,#00e5ff,#8b5cf6);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .about-panel .metrics {
+      margin-top: 0;
+      background: rgba(0,0,0,.62);
+      border-color: rgba(0,229,255,.4);
+    }
+    .about-panel .overview {
+      background: rgba(0,0,0,.68);
+      border-color: rgba(0,229,255,.42);
+      box-shadow: inset 0 0 35px rgba(0,229,255,.025), 0 0 25px rgba(0,0,0,.3);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
     @media (max-width:760px) {
       html, body { scroll-snap-type: y proximity; }
       .content { margin-left: 0; padding: 0 20px; }
       .hero, .about-panel { min-height: 100vh; height: auto; }
       .hero { padding: 20px 0; }
-      .about-panel { padding: 20px 0; }
+      .about-panel { padding: 32px 0 28px; }
+      .about-profile-card { padding: 24px 22px; }
     }
   </style>
 </head>
@@ -68,12 +139,19 @@
     </section>
 
     <section id="about" class="about-panel">
+      <h2 class="about-heading">ABOUT ME...</h2>
+      <article class="about-profile-card">
+        <p class="about-profile-label">PROFESSIONAL PROFILE</p>
+        <h3 class="about-profile-title"><span>Analytical Research &amp; Development Scientist</span> with 3+ years of experience.</h3>
+      </article>
+
       <section class="metrics" aria-label="Professional highlights">
-        <article><span>⚗</span><strong>2+</strong><small>YEARS<br>EXPERIENCE</small></article>
+        <article><span>⚗</span><strong>3+</strong><small>YEARS<br>EXPERIENCE</small></article>
         <article><span>▣</span><strong>15+</strong><small>INSTRUMENTS &amp;<br>TECHNIQUES</small></article>
         <article><span>◎</span><strong>10+</strong><small>METHODS<br>DEVELOPED</small></article>
         <article><span>▤</span><strong>1</strong><small>RESEARCH<br>PUBLICATION</small></article>
       </section>
+
       <section class="overview">
         <div class="lab-card"><div class="lab-screen">HPLC<br><span>DATA / ANALYSIS</span></div></div>
         <div><p class="section-label">OVERVIEW</p><h2>Transforming Data Into<br>Scientific Impact</h2><p>I am an Analytical R&amp;D professional with expertise in pharmaceutical analysis, method development, and characterization. My work focuses on scientific rigor, analytical problem solving, and quality-driven solutions.</p><a class="text-link" href="#about">MORE ABOUT ME →</a></div>
@@ -82,6 +160,6 @@
     </section>
   </main>
 
-  <script src="./script.js?v=4" defer></script>
+  <script src="./script.js?v=5" defer></script>
 </body>
 </html>
