@@ -189,7 +189,7 @@ function resetHeroTyping() {
   const texts = [
     'I am an Analytical Research Scientist specializing in method development',
     'and complex formulation analysis. From peptides to small molecules, I leverage HPLC/UPLC,',
-    'DSC, and ion chromatography to generate precise, GMP-compliant data.',
+    'DSC, and ion chromatography and other analytical instruments to generate precise, GMP-compliant data.',
     'My goal? To bridge the gap between lab innovation and regulatory approval.',
   ];
 
