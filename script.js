@@ -171,7 +171,7 @@ function typeText(element, text, speed = 34) {
         window.setTimeout(tick, speed);
       } else {
         element.classList.add('is-done');
-        if (caret) caret.style.opacity = '1';
+        if (caret) caret.style.opacity = '0';
         resolve();
       }
     };
@@ -195,8 +195,10 @@ function resetHeroTyping() {
   introOutput.textContent = '';
   lines.forEach((line) => {
     const span = line.querySelector('span');
+    const caret = line.querySelector('.typing-caret');
     span.textContent = '';
     line.classList.remove('is-done');
+    if (caret) caret.style.opacity = '1';
   });
 
   typeText(intro, "I'm Abhay Gupta.", 55).then(() => {
@@ -240,6 +242,14 @@ document.addEventListener('visibilitychange', () => {
 
 document.querySelector('.sidebar nav a[href="#home"]')?.addEventListener('click', onHomeClick);
 
+function setDefaultHome() {
+  if (window.location.hash !== '#home') {
+    history.replaceState(null, '', `${window.location.pathname}${window.location.search}#home`);
+  }
+  document.getElementById('home')?.scrollIntoView({ behavior: 'auto', block: 'start' });
+}
+
 resize();
 raf = requestAnimationFrame(frame);
+setDefaultHome();
 resetHeroTyping();
