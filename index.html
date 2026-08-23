@@ -8,6 +8,29 @@
   <meta name="description" content="Abhay Gupta — Research Scientist portfolio" />
   <title>Abhay Gupta — Research Scientist</title>
   <link rel="stylesheet" href="./style.css?v=3" />
+  <style>
+    /* Keep Home and About as distinct full-screen sections. */
+    .hero {
+      min-height: calc(100vh - 67px) !important;
+      height: calc(100vh - 67px);
+      overflow: hidden;
+      align-content: start;
+    }
+    .metrics,
+    .overview {
+      position: relative;
+      z-index: 2;
+    }
+    .metrics {
+      margin-top: 18px;
+    }
+    @media (max-width: 760px) {
+      .hero {
+        min-height: calc(100vh - 20px) !important;
+        height: calc(100vh - 20px);
+      }
+    }
+  </style>
 </head>
 <body>
   <canvas id="molecule-bg" aria-hidden="true"></canvas>
