@@ -28,7 +28,6 @@ function resize() {
   canvas.style.height = `${height}px`;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  // Extra-dense molecular field while keeping the motion smooth.
   const target = Math.min(520, Math.max(220, Math.floor((width * height) / 4000)));
   nodes = Array.from({ length: target }, createNode);
 }
@@ -156,6 +155,71 @@ function frame(now) {
   raf = requestAnimationFrame(frame);
 }
 
+function typeText(element, text, speed = 34) {
+  if (!element) return Promise.resolve();
+  const output = element.querySelector('strong, span:not(.typing-caret)') || element;
+  const caret = element.querySelector('.typing-caret');
+  output.textContent = '';
+  element.classList.remove('is-done');
+
+  let index = 0;
+  return new Promise((resolve) => {
+    const tick = () => {
+      if (index < text.length) {
+        output.textContent += text[index];
+        index += 1;
+        window.setTimeout(tick, speed);
+      } else {
+        element.classList.add('is-done');
+        if (caret) caret.style.opacity = '1';
+        resolve();
+      }
+    };
+    tick();
+  });
+}
+
+function resetHeroTyping() {
+  const intro = document.querySelector('.intro-heading');
+  const lines = [...document.querySelectorAll('.summary .typing-line')];
+  if (!intro || lines.length !== 4) return;
+
+  const texts = [
+    'I am an Analytical Research Scientist specializing in method development',
+    'and complex formulation analysis. From peptides to small molecules, I leverage HPLC/UPLC,',
+    'DSC, and ion chromatography to generate precise, GMP-compliant data.',
+    'My goal? To bridge the gap between lab innovation and regulatory approval.',
+  ];
+
+  const introOutput = intro.querySelector('strong');
+  introOutput.textContent = '';
+  lines.forEach((line) => {
+    const span = line.querySelector('span');
+    span.textContent = '';
+    line.classList.remove('is-done');
+  });
+
+  typeText(intro, "I'm Abhay Gupta.", 55).then(() => {
+    const runLine = (index) => {
+      if (index >= lines.length) return;
+      typeText(lines[index], texts[index], 21).then(() => {
+        window.setTimeout(() => runLine(index + 1), 180);
+      });
+    };
+    window.setTimeout(() => runLine(0), 260);
+  });
+}
+
+function onHomeClick(event) {
+  const home = event.currentTarget;
+  if (home.getAttribute('href') === '#home') {
+    event.preventDefault();
+    history.replaceState(null, '', '#home');
+    document.getElementById('home')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    resetHeroTyping();
+  }
+}
+
 window.addEventListener('resize', resize, { passive: true });
 window.addEventListener('pointermove', (event) => {
   pointer.x = event.clientX;
@@ -174,5 +238,8 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
+document.querySelector('.sidebar nav a[href="#home"]')?.addEventListener('click', onHomeClick);
+
 resize();
 raf = requestAnimationFrame(frame);
+resetHeroTyping();
