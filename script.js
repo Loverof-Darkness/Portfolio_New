@@ -161,6 +161,7 @@ function typeText(element, text, speed = 34) {
   const caret = element.querySelector('.typing-caret');
   output.textContent = '';
   element.classList.remove('is-done');
+  element.classList.add('is-typing');
 
   let index = 0;
   return new Promise((resolve) => {
@@ -170,6 +171,7 @@ function typeText(element, text, speed = 34) {
         index += 1;
         window.setTimeout(tick, speed);
       } else {
+        element.classList.remove('is-typing');
         element.classList.add('is-done');
         if (caret) caret.style.opacity = '0';
         resolve();
@@ -193,11 +195,12 @@ function resetHeroTyping() {
 
   const introOutput = intro.querySelector('strong');
   introOutput.textContent = '';
+  intro.classList.remove('is-typing', 'is-done');
   lines.forEach((line) => {
     const span = line.querySelector('span');
     const caret = line.querySelector('.typing-caret');
     span.textContent = '';
-    line.classList.remove('is-done');
+    line.classList.remove('is-typing', 'is-done');
     if (caret) caret.style.opacity = '1';
   });
 
