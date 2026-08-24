@@ -260,7 +260,7 @@ function injectExperienceSection() {
           <time>Sep 2023 – Jul 2025</time>
         </div>
         <h3>Trainee – Analytical Research &amp; Development</h3>
-        <p class="experience-company">ENDO PHARMACEUTICALS</p>
+        <p class="experience-company">ENDO PAR FORMULATIONS</p>
         <ul>
           <li>Performed characterization and routine analysis of APIs, finished products and injectable samples using HPLC and IR.</li>
           <li>Supported analytical method development activities for pharmaceutical samples and products.</li>
