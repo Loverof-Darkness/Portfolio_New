@@ -226,7 +226,6 @@ function injectExperienceSection() {
   experience.className = 'experience-panel';
   experience.innerHTML = `
     <div class="experience-header-wrap">
-      <p class="experience-kicker">CAREER TIMELINE</p>
       <h2 class="experience-heading">PROFESSIONAL EXPERIENCE</h2>
       <p class="experience-subtitle">From the beginning of my analytical career to my current role in pharmaceutical research &amp; development.</p>
     </div>
@@ -289,8 +288,7 @@ function injectExperienceSection() {
     body.home-active .experience-panel,body.about-active .experience-panel{display:none!important}
     body.experience-active .hero,body.experience-active .about-panel{display:none!important}
     .experience-header-wrap{max-width:980px}
-    .experience-kicker{margin:0 0 8px;color:#00e5ff;font:800 13px ui-monospace,monospace;letter-spacing:.24em}
-    .experience-heading{margin:0;font-size:clamp(58px,7vw,96px);line-height:.9;font-weight:900;letter-spacing:-.055em;background:linear-gradient(90deg,#fff,#00e5ff 48%,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 28px rgba(0,229,255,.15)}
+    .experience-heading{margin:0;font-size:clamp(50px,5.5vw,76px);line-height:.92;font-weight:900;letter-spacing:-.05em;background:linear-gradient(90deg,#fff,#00e5ff 48%,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 24px rgba(0,229,255,.14)}
     .experience-subtitle{margin:14px 0 0;max-width:820px;color:#cbd5e1;font-size:18px;font-weight:600;line-height:1.55}
     .career-track{position:relative;height:92px;margin:4px 8px 0;display:grid;grid-template-columns:1fr 1fr 1fr;align-items:start}
     .career-track-line,.career-track-progress{position:absolute;left:1%;right:1%;top:27px;height:4px;border-radius:5px}
@@ -317,8 +315,8 @@ function injectExperienceSection() {
     .experience-footer strong{margin-left:auto;color:#dce7f3;font-size:12px;letter-spacing:.06em}
     .live-pulse{width:8px;height:8px;border-radius:50%;background:#00ffb3;box-shadow:0 0 12px rgba(0,255,179,.8);animation:careerPulse 1.4s ease-in-out infinite}
     @keyframes careerPulse{0%,100%{transform:scale(.9);opacity:.72;box-shadow:0 0 10px rgba(0,229,255,.4)}50%{transform:scale(1.18);opacity:1;box-shadow:0 0 24px rgba(0,229,255,.95)}}
-    @media(max-width:1000px){.experience-panel{padding:38px 0}.experience-heading{font-size:64px}.experience-subtitle{font-size:16px}.experience-card h3{font-size:30px}.experience-card li{font-size:14px}}
-    @media(max-width:760px){.experience-panel{height:auto;min-height:100vh;padding:30px 0;gap:22px}.experience-heading{font-size:46px}.experience-subtitle{font-size:15px}.career-track{height:78px}.career-track-line,.career-track-progress{top:23px;height:3px}.career-dot{width:15px;height:15px;margin-top:17px}.experience-grid{grid-template-columns:1fr}.experience-card{padding:22px 20px}.experience-card h3{font-size:27px}.experience-card li{font-size:14px}.experience-footer{margin-top:0;flex-wrap:wrap}.experience-footer strong{margin-left:0;width:100%}}
+    @media(max-width:1000px){.experience-panel{padding:38px 0}.experience-heading{font-size:58px}.experience-subtitle{font-size:16px}.experience-card h3{font-size:30px}.experience-card li{font-size:14px}}
+    @media(max-width:760px){.experience-panel{height:auto;min-height:100vh;padding:30px 0;gap:22px}.experience-heading{font-size:44px}.experience-subtitle{font-size:15px}.career-track{height:78px}.career-track-line,.career-track-progress{top:23px;height:3px}.career-dot{width:15px;height:15px;margin-top:17px}.experience-grid{grid-template-columns:1fr}.experience-card{padding:22px 20px}.experience-card h3{font-size:27px}.experience-card li{font-size:14px}.experience-footer{margin-top:0;flex-wrap:wrap}.experience-footer strong{margin-left:0;width:100%}}
   `;
   document.head.appendChild(style);
 }
