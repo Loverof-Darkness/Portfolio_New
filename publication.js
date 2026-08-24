@@ -82,7 +82,7 @@
     content.appendChild(section);
     document.head.appendChild(style);
 
-    document.body.classList.remove('home-active','about-active','experience-active','arsenal-active','education-active');
+    document.body.classList.remove('home-active','about-active','experience-active','arsenal-active','education-active','beyond-active');
     document.body.classList.add('publication-active');
     document.querySelectorAll('.sidebar nav a').forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#publications'));
   }
@@ -101,4 +101,14 @@
     if (location.hash === '#publications') showPublication();
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind, {once:true}); else bind();
+
+  const loadBeyond = () => {
+    if (document.querySelector('script[data-beyond-loader]')) return;
+    const script = document.createElement('script');
+    script.src = './beyond.js?v=1';
+    script.defer = true;
+    script.dataset.beyondLoader = 'true';
+    document.body.appendChild(script);
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadBeyond, {once:true}); else loadBeyond();
 })();
