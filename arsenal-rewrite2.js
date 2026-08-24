@@ -200,3 +200,14 @@ function injectScientificArsenalSection() {
 }
 
 window.injectScientificArsenalSection = injectScientificArsenalSection;
+
+function renderArsenalIfActive() {
+  if (document.body?.classList.contains('arsenal-active')) {
+    injectScientificArsenalSection();
+  }
+}
+
+renderArsenalIfActive();
+window.addEventListener('hashchange', renderArsenalIfActive);
+setTimeout(renderArsenalIfActive, 100);
+setTimeout(renderArsenalIfActive, 400);
