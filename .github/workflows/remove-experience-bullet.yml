@@ -1,0 +1,35 @@
+name: Remove obsolete experience bullet
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Remove obsolete bullet
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('script.js')
+          s = p.read_text()
+          line = '          <li>Apply HPLC/UPLC, IR, UV, DSC and ion chromatography techniques to support analytical development and characterization activities.</li>\n'
+          if line in s:
+              p.write_text(s.replace(line, '', 1))
+          PY
+          rm -f .github/workflows/remove-experience-bullet.yml
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add script.js .github/workflows/remove-experience-bullet.yml
+          git commit -m 'Remove obsolete experience bullet'
+          git push
