@@ -1,0 +1,125 @@
+name: Refine Scientific Arsenal
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  refine:
+    if: ${{ !contains(github.event.head_commit.message, '[portfolio-auto]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Refine arsenal
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          script = Path('script.js')
+          text = script.read_text()
+
+          # Plain numbering: 1, 2, 3 ... 12
+          text = text.replace("${String(index + 1).padStart(2,'0')}", "${index + 1}")
+          text = text.replace("String(index + 1).padStart(2,'0')", "index + 1")
+
+          # Remove symbol markup from arsenal cards.
+          text = re.sub(r"\n?\s*<span class=\\\"arsenal-icon\\\">\$\{symbols\[index\]\}</span>", "", text)
+          text = re.sub(r"\n\s*const symbols = \[[^\n]*\];", "", text)
+
+          script.write_text(text)
+
+          css = Path('style.css')
+          css_text = css.read_text()
+          override = r'''
+
+/* Scientific Arsenal final tile refinement */
+.arsenal-header-wrap {
+  text-align: left !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+}
+.arsenal-heading {
+  font-size: clamp(42px, 5vw, 68px) !important;
+}
+.arsenal-item {
+  width: 142px !important;
+  min-height: 96px !important;
+  padding: 12px 10px !important;
+  gap: 7px !important;
+  border-radius: 16px !important;
+  --orbit-radius: min(31vw, 265px);
+  transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(var(--orbit-radius) * -1)) rotate(calc(var(--angle) * -1)) !important;
+  animation: arsenalSequential .65s cubic-bezier(.2,.8,.2,1) forwards !important;
+  animation-delay: calc(var(--i) * .55s) !important;
+}
+.arsenal-item:hover,
+.arsenal-item:focus-visible,
+.arsenal-item.is-selected {
+  transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(var(--orbit-radius) * -1)) rotate(calc(var(--angle) * -1)) scale(1.06) !important;
+}
+.arsenal-number {
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+.arsenal-icon { display: none !important; }
+.arsenal-name {
+  max-width: 126px !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  line-height: 1.18 !important;
+}
+@keyframes arsenalSequential {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(var(--orbit-radius) * -0.78)) rotate(calc(var(--angle) * -1)) scale(.72);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(var(--orbit-radius) * -1)) rotate(calc(var(--angle) * -1));
+  }
+}
+@media (max-width: 900px) {
+  .arsenal-item {
+    width: 126px !important;
+    min-height: 86px !important;
+    --orbit-radius: 235px;
+  }
+  .arsenal-name { font-size: 13px !important; }
+}
+@media (max-width: 760px) {
+  .arsenal-header-wrap { text-align: left !important; }
+  .arsenal-heading { font-size: 40px !important; }
+  .arsenal-item {
+    width: 132px !important;
+    min-height: 82px !important;
+    --orbit-radius: 255px;
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(var(--orbit-radius) * -1)) rotate(calc(var(--angle) * -1)) !important;
+  }
+  .arsenal-item:hover,
+  .arsenal-item:focus-visible,
+  .arsenal-item.is-selected {
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(var(--orbit-radius) * -1)) rotate(calc(var(--angle) * -1)) scale(1.05) !important;
+  }
+}
+'''
+          if '/* Scientific Arsenal final tile refinement */' not in css_text:
+              css.write_text(css_text + override)
+
+          wf = Path('.github/workflows/arsenal-refine.yml')
+          # Remove this temporary workflow from the resulting commit.
+          wf.unlink(missing_ok=True)
+          PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add script.js style.css .github/workflows/arsenal-refine.yml
+          git diff --cached --quiet && exit 0
+          git commit -m "Refine Scientific Arsenal tiles [portfolio-auto]"
+          git push
