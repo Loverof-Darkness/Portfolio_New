@@ -47,4 +47,13 @@
     if(location.hash==='#beyond')showBeyond();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+
+  // Load the icon-only Connect implementation after the page scripts so it replaces the legacy Connect renderer.
+  if(!document.querySelector('script[data-contact-loader]')){
+    const contact=document.createElement('script');
+    contact.src='./contact.js?v=2';
+    contact.defer=true;
+    contact.dataset.contactLoader='true';
+    document.body.appendChild(contact);
+  }
 })();
