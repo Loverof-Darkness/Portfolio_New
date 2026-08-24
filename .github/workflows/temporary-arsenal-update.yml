@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Update portfolio
+      - name: Refine Scientific Arsenal
         shell: bash
         run: |
           python - <<'PY'
@@ -25,10 +25,9 @@ jobs:
           script = Path('script.js')
           text = script.read_text()
 
-          arsenal_function = r'''
+          new_function = r'''
 function injectScientificArsenalSection() {
   if (document.getElementById('arsenal')) return;
-
   const content = document.querySelector('.content');
   if (!content) return;
 
@@ -47,27 +46,17 @@ function injectScientificArsenalSection() {
     'Other Wet Chemical Techniques',
   ];
 
-  const icons = ['⌁','◈','⊕','IR','UV','ζ','Δ','TGA','η','pH','Ω','∿'];
   const arsenal = document.createElement('section');
   arsenal.id = 'arsenal';
   arsenal.className = 'arsenal-panel';
   arsenal.innerHTML = `
     <div class="arsenal-header-wrap">
       <h2 class="arsenal-heading">INSTRUMENTS HANDLED</h2>
-      <p class="arsenal-subtitle">Analytical instruments and laboratory techniques handled across pharmaceutical research &amp; development.</p>
     </div>
     <div class="arsenal-orbit" role="list" aria-label="Analytical instruments handled">
-      <div class="arsenal-core">
-        <div class="arsenal-core-ring"></div>
-        <span class="arsenal-core-kicker">SCIENTIFIC ARSENAL</span>
-        <strong class="arsenal-core-title">12+ TOOLS</strong>
-        <span class="arsenal-core-hint">HOVER / CLICK</span>
-        <p class="arsenal-core-selected">Select an instrument</p>
-      </div>
       ${instruments.map((name, index) => `
-        <button class="arsenal-item arsenal-item-${index + 1}" style="--i:${index}" type="button" role="listitem" data-index="${index}" aria-label="${name}">
+        <button class="arsenal-item" style="--i:${index}" type="button" role="listitem" aria-label="${name}">
           <span class="arsenal-number">${String(index + 1).padStart(2, '0')}</span>
-          <span class="arsenal-icon">${icons[index]}</span>
           <span class="arsenal-name">${name}</span>
         </button>
       `).join('')}
@@ -76,198 +65,210 @@ function injectScientificArsenalSection() {
   content.appendChild(arsenal);
 
   const items = [...arsenal.querySelectorAll('.arsenal-item')];
-  const selected = arsenal.querySelector('.arsenal-core-selected');
-  items.forEach((item, index) => {
+  items.forEach((item) => {
     const activate = () => {
       items.forEach((node) => node.classList.remove('is-selected'));
       item.classList.add('is-selected');
-      if (selected) selected.textContent = `${String(index + 1).padStart(2, '0')} • ${instruments[index]}`;
     };
     item.addEventListener('mouseenter', activate);
     item.addEventListener('focus', activate);
     item.addEventListener('click', activate);
   });
+
+  const style = document.createElement('style');
+  style.id = 'arsenal-runtime-styles';
+  style.textContent = `
+    body.home-active .arsenal-panel, body.about-active .arsenal-panel, body.experience-active .arsenal-panel { display:none!important; }
+    body.arsenal-active .hero, body.arsenal-active .about-panel, body.arsenal-active .experience-panel { display:none!important; }
+
+    .arsenal-panel {
+      min-height:100vh;
+      height:100vh;
+      overflow:auto;
+      scroll-snap-align:start;
+      scroll-snap-stop:always;
+      padding:38px 0 34px;
+      display:flex;
+      flex-direction:column;
+      gap:28px;
+    }
+
+    .arsenal-header-wrap {
+      text-align:left;
+      margin:0;
+      max-width:900px;
+    }
+    .arsenal-heading {
+      margin:0;
+      font-size:clamp(42px,5vw,68px);
+      line-height:.95;
+      letter-spacing:-.045em;
+      font-weight:900;
+      background:linear-gradient(90deg,#fff 0%,#00e5ff 46%,#8b5cf6 100%);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      text-shadow:0 0 24px rgba(0,229,255,.13);
+    }
+
+    .arsenal-orbit {
+      position:relative;
+      width:100%;
+      min-height:0;
+      max-height:none;
+      flex:1 1 auto;
+      margin:0;
+      padding:18px 14px 24px;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      grid-template-rows:repeat(3,minmax(120px,1fr));
+      gap:20px 24px;
+      border:0;
+      border-radius:0;
+      background:none;
+      box-shadow:none;
+    }
+    .arsenal-orbit::before,
+    .arsenal-orbit::after,
+    .arsenal-core {
+      display:none!important;
+    }
+
+    .arsenal-item {
+      position:relative;
+      left:auto;
+      top:auto;
+      width:100%;
+      min-height:118px;
+      padding:20px 18px;
+      margin:0;
+      transform:none!important;
+      border:1px solid rgba(0,229,255,.3);
+      border-radius:16px;
+      background:rgba(2,9,14,.84);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      color:#ecf8ff;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      cursor:pointer;
+      opacity:0;
+      animation:arsenalCardIn .72s cubic-bezier(.2,.8,.2,1) forwards;
+      animation-delay:calc(var(--i) * 220ms);
+      transition:border-color .22s ease, box-shadow .22s ease, background .22s ease;
+      box-shadow:0 0 18px rgba(0,229,255,.035);
+      z-index:1;
+    }
+
+    .arsenal-item:nth-child(1){grid-column:1;grid-row:1}
+    .arsenal-item:nth-child(2){grid-column:2;grid-row:1}
+    .arsenal-item:nth-child(3){grid-column:3;grid-row:1}
+    .arsenal-item:nth-child(4){grid-column:4;grid-row:1}
+    .arsenal-item:nth-child(5){grid-column:4;grid-row:2}
+    .arsenal-item:nth-child(6){grid-column:3;grid-row:2}
+    .arsenal-item:nth-child(7){grid-column:2;grid-row:2}
+    .arsenal-item:nth-child(8){grid-column:1;grid-row:2}
+    .arsenal-item:nth-child(9){grid-column:1;grid-row:3}
+    .arsenal-item:nth-child(10){grid-column:2;grid-row:3}
+    .arsenal-item:nth-child(11){grid-column:3;grid-row:3}
+    .arsenal-item:nth-child(12){grid-column:4;grid-row:3}
+
+    .arsenal-item:hover,
+    .arsenal-item:focus-visible,
+    .arsenal-item.is-selected {
+      transform:translateY(-3px)!important;
+      border-color:rgba(0,229,255,.86);
+      background:rgba(3,15,22,.93);
+      box-shadow:0 0 28px rgba(0,229,255,.16), inset 0 0 22px rgba(139,92,246,.08);
+      outline:none;
+    }
+
+    .arsenal-number {
+      display:block;
+      color:#00e5ff;
+      font:900 18px ui-monospace,monospace;
+      letter-spacing:.08em;
+      line-height:1;
+    }
+    .arsenal-name {
+      display:block;
+      max-width:100%;
+      color:#f3f8ff;
+      font-size:18px;
+      font-weight:900;
+      line-height:1.18;
+      text-align:center;
+      letter-spacing:.01em;
+    }
+
+    @keyframes arsenalCardIn {
+      from { opacity:0; transform:translateY(24px) scale(.92); }
+      to { opacity:1; transform:translateY(0) scale(1); }
+    }
+
+    @media(max-width:900px){
+      .arsenal-panel{padding-top:32px;gap:22px}
+      .arsenal-heading{font-size:48px}
+      .arsenal-orbit{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(105px,1fr));gap:16px}
+      .arsenal-item:nth-child(1){grid-column:1;grid-row:1}
+      .arsenal-item:nth-child(2){grid-column:2;grid-row:1}
+      .arsenal-item:nth-child(3){grid-column:3;grid-row:1}
+      .arsenal-item:nth-child(4){grid-column:3;grid-row:2}
+      .arsenal-item:nth-child(5){grid-column:2;grid-row:2}
+      .arsenal-item:nth-child(6){grid-column:1;grid-row:2}
+      .arsenal-item:nth-child(7){grid-column:1;grid-row:3}
+      .arsenal-item:nth-child(8){grid-column:2;grid-row:3}
+      .arsenal-item:nth-child(9){grid-column:3;grid-row:3}
+      .arsenal-item:nth-child(10){grid-column:3;grid-row:4}
+      .arsenal-item:nth-child(11){grid-column:2;grid-row:4}
+      .arsenal-item:nth-child(12){grid-column:1;grid-row:4}
+      .arsenal-name{font-size:16px}
+    }
+
+    @media(max-width:600px){
+      .arsenal-panel{height:auto;min-height:100vh;padding:26px 0}
+      .arsenal-heading{font-size:40px}
+      .arsenal-orbit{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(6,minmax(90px,1fr));padding:4px 0 10px;gap:14px}
+      .arsenal-item{min-height:88px;padding:16px 12px}
+      .arsenal-item:nth-child(1){grid-column:1;grid-row:1}
+      .arsenal-item:nth-child(2){grid-column:2;grid-row:1}
+      .arsenal-item:nth-child(3){grid-column:2;grid-row:2}
+      .arsenal-item:nth-child(4){grid-column:1;grid-row:2}
+      .arsenal-item:nth-child(5){grid-column:1;grid-row:3}
+      .arsenal-item:nth-child(6){grid-column:2;grid-row:3}
+      .arsenal-item:nth-child(7){grid-column:2;grid-row:4}
+      .arsenal-item:nth-child(8){grid-column:1;grid-row:4}
+      .arsenal-item:nth-child(9){grid-column:1;grid-row:5}
+      .arsenal-item:nth-child(10){grid-column:2;grid-row:5}
+      .arsenal-item:nth-child(11){grid-column:2;grid-row:6}
+      .arsenal-item:nth-child(12){grid-column:1;grid-row:6}
+      .arsenal-number{font-size:16px}
+      .arsenal-name{font-size:14px}
+    }
+  `;
+  document.head.appendChild(style);
 }
 '''
 
-          if 'function injectScientificArsenalSection()' not in text:
-              text = text.replace('\nfunction updateExperienceProgress()', '\n' + arsenal_function + '\nfunction updateExperienceProgress()', 1)
-
-          text = text.replace("const allowed = ['home', 'about', 'experience'];", "const allowed = ['home', 'about', 'experience', 'arsenal'];")
-          text = text.replace("const isExperience = activeView === 'experience';", "const isExperience = activeView === 'experience';\n  const isArsenal = activeView === 'arsenal';")
-          text = text.replace("document.body.classList.toggle('experience-active', isExperience);", "document.body.classList.toggle('experience-active', isExperience);\n  document.body.classList.toggle('arsenal-active', isArsenal);")
-          text = text.replace("if (isExperience) {\n    injectExperienceSection();\n    updateExperienceProgress();\n  }", "if (isExperience) {\n    injectExperienceSection();\n    updateExperienceProgress();\n  }\n  if (isArsenal) injectScientificArsenalSection();", 1)
-          text = text.replace("function onExperienceClick(event) {\n  navigateToView(event, 'experience');\n}", "function onExperienceClick(event) {\n  navigateToView(event, 'experience');\n}\n\nfunction onArsenalClick(event) {\n  navigateToView(event, 'arsenal');\n}")
-          text = text.replace("const view = ['about','experience','home'].includes(hash) ? hash : 'home';", "const view = ['about','experience','arsenal','home'].includes(hash) ? hash : 'home';")
-          text = text.replace("if (view === 'experience') injectExperienceSection();", "if (view === 'experience') injectExperienceSection();\n  if (view === 'arsenal') injectScientificArsenalSection();")
-          text = text.replace("document.querySelector('.sidebar nav a[href=\"#experience\"]')?.addEventListener('click', onExperienceClick);", "document.querySelector('.sidebar nav a[href=\"#experience\"]')?.addEventListener('click', onExperienceClick);\ndocument.querySelector('.sidebar nav a[href=\"#arsenal\"]')?.addEventListener('click', onArsenalClick);")
-          text = text.replace("injectExperienceSection();\nresize();", "injectExperienceSection();\ninjectScientificArsenalSection();\nresize();")
-
+          text = re.sub(r'function injectScientificArsenalSection\(\) \{.*?\n\}\n\nfunction setView', new_function + '\n\nfunction setView', text, count=1, flags=re.S)
           script.write_text(text)
 
           css = Path('style.css')
           css_text = css.read_text()
-          override = r'''
+          css_text += r'''
 
-/* Portfolio section refinements */
-body.experience-active .experience-kicker { display: none !important; }
-body.experience-active .experience-heading {
-  font-size: clamp(48px, 5.6vw, 72px) !important;
-  line-height: .95;
-}
-
-.arsenal-panel {
-  min-height: 100vh;
-  height: 100vh;
-  overflow: auto;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  padding: 48px 0 34px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-body.home-active .arsenal-panel,
-body.about-active .arsenal-panel,
-body.experience-active .arsenal-panel { display: none !important; }
-body.arsenal-active .hero,
-body.arsenal-active .about-panel,
-body.arsenal-active .experience-panel { display: none !important; }
-
-.arsenal-header-wrap { text-align: center; margin: 0 auto; max-width: 900px; }
-.arsenal-heading {
-  margin: 0;
-  font-size: clamp(48px, 5.8vw, 78px);
-  line-height: .92;
-  letter-spacing: -.05em;
-  font-weight: 900;
-  background: linear-gradient(90deg,#fff 0%,#00e5ff 45%,#8b5cf6 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 0 26px rgba(0,229,255,.14);
-}
-.arsenal-subtitle { margin: 12px auto 0; max-width: 720px; color: #aebdcd; font-size: 16px; font-weight: 600; line-height: 1.45; }
-
-.arsenal-orbit {
-  position: relative;
-  width: min(78vw, 760px);
-  aspect-ratio: 1;
-  margin: 4px auto 0;
-  flex: 1 1 auto;
-  min-height: 560px;
-  max-height: 700px;
-  border: 1px solid rgba(0,229,255,.12);
-  border-radius: 50%;
-  background: radial-gradient(circle at center, rgba(0,229,255,.04), transparent 43%);
-  box-shadow: inset 0 0 80px rgba(0,229,255,.035), 0 0 55px rgba(0,0,0,.28);
-}
-.arsenal-orbit::before,
-.arsenal-orbit::after {
-  content: "";
-  position: absolute;
-  inset: 13%;
-  border: 1px solid rgba(0,229,255,.16);
-  border-radius: 50%;
-  pointer-events: none;
-}
-.arsenal-orbit::after { inset: 31%; border-color: rgba(139,92,246,.16); }
-.arsenal-core {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 220px;
-  height: 220px;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  text-align: center;
-  background: radial-gradient(circle at 50% 44%, rgba(0,229,255,.11), rgba(6,7,14,.92) 68%);
-  border: 1px solid rgba(0,229,255,.48);
-  box-shadow: 0 0 45px rgba(0,229,255,.12), inset 0 0 38px rgba(139,92,246,.08);
-  z-index: 2;
-}
-.arsenal-core-ring { position: absolute; inset: -13px; border: 1px dashed rgba(0,229,255,.26); border-radius: 50%; animation: arsenalSpin 20s linear infinite; }
-.arsenal-core-kicker { color: #00e5ff; font: 800 10px ui-monospace, monospace; letter-spacing: .18em; }
-.arsenal-core-title { color: #fff; font-size: 28px; font-weight: 900; }
-.arsenal-core-hint { color: #7890a5; font: 700 9px ui-monospace, monospace; letter-spacing: .16em; }
-.arsenal-core-selected { min-height: 20px; margin: 5px 18px 0; color: #b9c7d7; font-size: 13px; font-weight: 700; }
-
-.arsenal-item {
-  --angle: calc((var(--i) * 30deg) - 90deg);
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 126px;
-  min-height: 92px;
-  padding: 10px 8px;
-  transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(min(34vw, 285px) * -1)) rotate(calc(var(--angle) * -1));
-  border: 1px solid rgba(0,229,255,.28);
-  border-radius: 18px;
-  background: rgba(2,9,14,.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  color: #ecf8ff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  cursor: pointer;
-  opacity: 0;
-  animation: arsenalIn .7s cubic-bezier(.2,.8,.2,1) forwards;
-  animation-delay: calc(var(--i) * 90ms);
-  transition: .25s ease;
-  box-shadow: 0 0 18px rgba(0,229,255,.04);
-  z-index: 3;
-}
-.arsenal-item:hover,
-.arsenal-item:focus-visible,
-.arsenal-item.is-selected {
-  transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(min(34vw, 285px) * -1)) rotate(calc(var(--angle) * -1)) scale(1.07);
-  border-color: rgba(0,229,255,.85);
-  box-shadow: 0 0 25px rgba(0,229,255,.15), inset 0 0 20px rgba(139,92,246,.08);
-  outline: none;
-}
-.arsenal-number { color: #00e5ff; font: 900 11px ui-monospace, monospace; letter-spacing: .08em; }
-.arsenal-icon { font: 900 21px Georgia, serif; color: #dffaff; }
-.arsenal-name { max-width: 108px; color: #d7e4ef; font-size: 11px; font-weight: 800; line-height: 1.12; text-align: center; }
-
-@keyframes arsenalIn { from { opacity: 0; transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(min(34vw, 285px) * -.82)) rotate(calc(var(--angle) * -1)) scale(.75); } to { opacity: 1; transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(min(34vw, 285px) * -1)) rotate(calc(var(--angle) * -1)); } }
-@keyframes arsenalSpin { to { transform: rotate(360deg); } }
-
-@media (max-width: 900px) {
-  .arsenal-orbit { width: min(92vw, 620px); min-height: 520px; }
-  .arsenal-core { width: 180px; height: 180px; }
-  .arsenal-core-title { font-size: 24px; }
-  .arsenal-item { width: 112px; min-height: 80px; }
-  .arsenal-name { font-size: 10px; }
-}
-@media (max-width: 760px) {
-  .arsenal-panel { height: auto; min-height: 100vh; padding: 32px 0 28px; }
-  .arsenal-heading { font-size: 44px; }
-  .arsenal-subtitle { font-size: 14px; padding: 0 8px; }
-  .arsenal-orbit { width: 100%; min-height: 670px; border-radius: 30px; aspect-ratio: auto; margin-top: 6px; }
-  .arsenal-orbit::before, .arsenal-orbit::after { display: none; }
-  .arsenal-core { width: 170px; height: 170px; }
-  .arsenal-item {
-    width: 128px;
-    min-height: 74px;
-    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-275px) rotate(calc(var(--angle) * -1));
-  }
-  .arsenal-item:hover, .arsenal-item:focus-visible, .arsenal-item.is-selected {
-    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-275px) rotate(calc(var(--angle) * -1)) scale(1.05);
-  }
-}
+/* Final Scientific Arsenal layout override */
+.arsenal-panel .arsenal-icon,
+.arsenal-panel .arsenal-core,
+.arsenal-panel .arsenal-orbit::before,
+.arsenal-panel .arsenal-orbit::after { display:none!important; }
+.arsenal-panel .arsenal-header-wrap { text-align:left!important; margin-left:0!important; }
 '''
-          if '/* Portfolio section refinements */' not in css_text:
-              css.write_text(css_text + override)
+          css.write_text(css_text)
 
-          # Keep the temporary workflow from being retained in the portfolio.
           wf = Path('.github/workflows/temporary-arsenal-update.yml')
           wf.unlink(missing_ok=True)
           PY
@@ -276,5 +277,5 @@ body.arsenal-active .experience-panel { display: none !important; }
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add script.js style.css .github/workflows/temporary-arsenal-update.yml
           git diff --cached --quiet && exit 0
-          git commit -m "Add Scientific Arsenal section [portfolio-auto]"
+          git commit -m "Refine Scientific Arsenal layout [portfolio-auto]"
           git push
