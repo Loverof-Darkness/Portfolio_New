@@ -6,3 +6,10 @@ body.arsenal-active .arsenal-name{font-size:13px;font-weight:850}
 body.arsenal-active .arsenal-icon,body.arsenal-active .arsenal-number{display:none!important}
 body.arsenal-active .arsenal-item{animation-delay:calc(var(--i) * 650ms)!important;width:148px;min-height:86px}
 @media(max-width:760px){body.arsenal-active .arsenal-header-wrap{text-align:left}body.arsenal-active .arsenal-heading{font-size:44px!important}body.arsenal-active .arsenal-item{width:142px;animation-delay:calc(var(--i) * 550ms)!important}}
+
+/* Scientific Arsenal: final card cleanup */
+.arsenal-header-wrap{text-align:left!important;margin:0!important}
+.arsenal-item{--angle:calc(var(--i)*30deg)!important;animation-delay:calc(var(--i)*650ms)!important}
+.arsenal-item .arsenal-icon{display:none!important}
+.arsenal-number{font-size:14px!important;letter-spacing:.08em}
+.arsenal-name{font-size:14px!important;font-weight:850!important;line-height:1.18!important;color:#dff7ff!important}
