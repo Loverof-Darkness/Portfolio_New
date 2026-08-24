@@ -250,7 +250,6 @@ function injectExperienceSection() {
         <ul>
           <li>Responsible for analytical method development for complex pharmaceutical formulations, including peptide-based formulations.</li>
           <li>Conduct pre-validation studies to assess analytical method performance and readiness for validation.</li>
-          <li>Apply HPLC/UPLC, IR, UV, DSC and ion chromatography techniques to support analytical development and characterization activities.</li>
           <li>Work within pharmaceutical quality and compliance expectations, with emphasis on scientific documentation and reproducible analytical results.</li>
         </ul>
       </article>
