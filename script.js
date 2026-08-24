@@ -235,7 +235,7 @@ function injectExperienceSection() {
       <div class="career-track-line"></div>
       <div class="career-track-progress"></div>
       <div class="career-start"><span class="career-dot"></span><strong>SEP 2023</strong><small>START</small></div>
-      <div class="career-transition"><span class="career-dot"></span><strong>AUG 2025</strong><small>ROLE TRANSITION</small></div>
+      <div class="career-transition"><span class="career-dot"></span><strong>AUG 2025</strong><small>ENDO PAR FORMULATION</small></div>
       <div class="career-now" style="--now: 100%"><span class="career-dot pulse"></span><strong>NOW</strong><small>VIATRIS</small></div>
     </div>
 
