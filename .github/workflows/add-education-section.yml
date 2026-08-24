@@ -1,0 +1,37 @@
+name: Wire interactive Education section
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  wire:
+    if: ${{ !contains(github.event.head_commit.message, '[portfolio-auto]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add education script to index
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          text = p.read_text()
+          marker = '<script src="./arsenal-rewrite2.js?v=1" defer></script>'
+          education = '<script src="./education.js?v=1" defer></script>'
+          if education not in text:
+              text = text.replace(marker, marker + '\n  ' + education)
+              p.write_text(text)
+          PY
+
+          rm -f .github/workflows/add-education-section.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html .github/workflows/add-education-section.yml
+          if ! git diff --cached --quiet; then
+            git commit -m "Wire interactive Education section [portfolio-auto]"
+            git push
+          fi
