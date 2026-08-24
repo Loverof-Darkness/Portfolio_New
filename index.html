@@ -13,16 +13,9 @@
     .content { margin-left: 250px; padding: 0 clamp(28px,4vw,70px); }
     .hero, .about-panel { min-height: 100vh; height: 100vh; scroll-snap-align: start; scroll-snap-stop: always; }
     .hero { overflow: hidden; }
-    .about-panel {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      gap: 22px;
-      padding: 52px 0 40px;
-      overflow: auto;
-    }
-    body.home-active .about-panel { display: none !important; }
-    body.about-active .hero { display: none !important; }
+    .about-panel { display:flex; flex-direction:column; justify-content:flex-start; gap:22px; padding:52px 0 40px; overflow:auto; }
+    body.home-active .about-panel { display:none !important; }
+    body.about-active .hero { display:none !important; }
     .about-heading { margin:0; font-size:clamp(46px,6vw,78px); line-height:.95; font-weight:900; letter-spacing:-.055em; background:linear-gradient(90deg,#fff 0%,#00e5ff 48%,#8b5cf6 100%); -webkit-background-clip:text; background-clip:text; color:transparent; text-shadow:0 0 26px rgba(0,229,255,.14); }
     .about-profile-card { position:relative; min-height:155px; padding:30px 34px; border:1px solid rgba(0,229,255,.52); background:linear-gradient(135deg,rgba(2,16,22,.88),rgba(5,5,12,.78)); box-shadow:inset 0 0 35px rgba(0,229,255,.045),0 0 30px rgba(0,0,0,.32); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); clip-path:polygon(0 0,98.8% 0,100% 18%,100% 82%,98.8% 100%,0 100%,1.2% 82%,1.2% 18%); overflow:hidden; }
     .about-profile-card::before { content:""; position:absolute; inset:12px; border:1px solid rgba(139,92,246,.16); pointer-events:none; }
@@ -72,19 +65,11 @@
     <footer>© 2026 Abhay Gupta<br><span>All Rights Reserved</span></footer>
   </aside>
   <main class="content">
-    <section id="home" class="hero">
-      <div class="hero-copy"><h1>ABHAY<br><strong>GUPTA</strong></h1><p class="role">RESEARCH SCIENTIST</p><p class="intro-heading typing-line" aria-live="polite"><strong></strong><span class="typing-caret" aria-hidden="true"></span></p><div class="summary typing-lines" aria-live="polite"><p class="typing-line"><span></span><i class="typing-caret" aria-hidden="true"></i></p><p class="typing-line"><span></span><i class="typing-caret" aria-hidden="true"></i></p><p class="typing-line"><span></span><i class="typing-caret" aria-hidden="true"></i></p><p class="typing-line"><span></span><i class="typing-caret" aria-hidden="true"></i></p></div></div>
-      <div class="portrait-wrap" aria-label="Abhay Gupta portrait"><div class="portrait-glow"></div><img class="portrait" src="./assets/hero-portrait.png?v=1" alt="Abhay Gupta in formal attire" /></div>
-    </section>
-    <section id="about" class="about-panel">
-      <h2 class="about-heading">ABOUT ME...</h2>
-      <article class="about-profile-card"><p class="about-profile-label">PROFESSIONAL PROFILE</p><h3 class="about-profile-title"><span>Analytical Research &amp; Development Scientist</span> with 3+ years of experience.</h3></article>
-      <section class="metrics" aria-label="Professional highlights"><article><span>⚗</span><strong>3+</strong><small>YEARS<br>EXPERIENCE</small></article><article><span>▣</span><strong>15+</strong><small>INSTRUMENTS &amp;<br>TECHNIQUES</small></article><article><span>◎</span><strong>10+</strong><small>METHODS<br>DEVELOPED</small></article><article><span>▤</span><strong>1</strong><small>RESEARCH<br>PUBLICATION</small></article></section>
-      <section class="overview"><div class="instrument-visual" aria-label="Laboratory analytical instrumentation"><div class="instrument-unit"><div class="instrument-display"></div><div class="instrument-stack"><i></i><i></i><i></i><i></i></div><div class="instrument-base"></div></div><div class="instrument-caption">ANALYTICAL LABORATORY INSTRUMENTATION</div></div><div><h2>Transforming Data Into<br>Scientific Impact</h2></div><div class="expertise"><p class="section-label">CORE EXPERTISE</p><div class="skill"><span>Analytical Method Development</span><b>95%</b><i style="--w:95%"></i></div><div class="skill"><span>HPLC / UPLC / LCMS</span><b>92%</b><i style="--w:92%"></i></div><div class="skill"><span>Validation (ICH Guidelines)</span><b>90%</b><i style="--w:90%"></i></div><div class="skill"><span>Pharmaceutical Analysis</span><b>93%</b><i style="--w:93%"></i></div></div></section>
-    </section>
+    <section id="home" class="hero"><div class="hero-copy"><h1>ABHAY<br><strong>GUPTA</strong></h1><p class="role">RESEARCH SCIENTIST</p><p class="intro-heading typing-line" aria-live="polite"><strong></strong><span class="typing-caret" aria-hidden="true"></span></p><div class="summary typing-lines" aria-live="polite"><p class="typing-line"><span></span><i class="typing-caret" aria-hidden="true"></i></p><p class="typing-line"><span></span><i class="typing-caret" aria-hidden="true"></i></p><p class="typing-line"><span></span><i class="typing-caret" aria-hidden="true"></i></p><p class="typing-line"><span></span><i class="typing-caret" aria-hidden="true"></i></p></div></div><div class="portrait-wrap" aria-label="Abhay Gupta portrait"><div class="portrait-glow"></div><img class="portrait" src="./assets/hero-portrait.png?v=1" alt="Abhay Gupta in formal attire" /></div></section>
+    <section id="about" class="about-panel"><h2 class="about-heading">ABOUT ME...</h2><article class="about-profile-card"><p class="about-profile-label">PROFESSIONAL PROFILE</p><h3 class="about-profile-title"><span>Analytical Research &amp; Development Scientist</span> with 3+ years of experience.</h3></article><section class="metrics" aria-label="Professional highlights"><article><span>⚗</span><strong>3+</strong><small>YEARS<br>EXPERIENCE</small></article><article><span>▣</span><strong>15+</strong><small>INSTRUMENTS &amp;<br>TECHNIQUES</small></article><article><span>◎</span><strong>10+</strong><small>METHODS<br>DEVELOPED</small></article><article><span>▤</span><strong>1</strong><small>RESEARCH<br>PUBLICATION</small></article></section><section class="overview"><div class="instrument-visual" aria-label="Laboratory analytical instrumentation"><div class="instrument-unit"><div class="instrument-display"></div><div class="instrument-stack"><i></i><i></i><i></i><i></i></div><div class="instrument-base"></div></div><div class="instrument-caption">ANALYTICAL LABORATORY INSTRUMENTATION</div></div><div><h2>Transforming Data Into<br>Scientific Impact</h2></div><div class="expertise"><p class="section-label">CORE EXPERTISE</p><div class="skill"><span>Analytical Method Development</span><b>95%</b><i style="--w:95%"></i></div><div class="skill"><span>HPLC / UPLC / LCMS</span><b>92%</b><i style="--w:92%"></i></div><div class="skill"><span>Validation (ICH Guidelines)</span><b>90%</b><i style="--w:90%"></i></div><div class="skill"><span>Pharmaceutical Analysis</span><b>93%</b><i style="--w:93%"></i></div></div></section></section>
   </main>
   <script src="./script.js?v=6" defer></script>
   <script src="./arsenal-rewrite2.js?v=1" defer></script>
-  <script src="./education.js?v=1" defer></script>
+  <script src="./education.js?v=2" defer></script>
 </body>
 </html>
