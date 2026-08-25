@@ -1,4 +1,6 @@
 (() => {
+  const diagnostics = window.portfolioDiagnostics;
+
   const imageAssets = {
     chess: './assets/extracurricular/chess.webp?v=1',
     volleyball: './assets/extracurricular/volleyball.webp?v=1',
@@ -16,6 +18,7 @@
   function renderBeyond(){
     const section=Portfolio.renderPanel({
       id:'beyond',
+      scope:'extracurricular section',
       className:'beyond-panel',
       styleId:'beyond-runtime-style',
       html:`<header class="beyond-header"><h2>BEYOND THE LAB</h2><p class="beyond-intro">Passions that inspire balance, build discipline, and fuel creativity.</p></header><div class="beyond-list">${activities.map((item,index)=>`<article class="beyond-item" style="--delay:${index*320}ms;--accent:${item.accent}"><div class="beyond-copy"><span class="beyond-index">${item.kicker}</span><h3>${item.title}</h3><p>${item.text}</p></div><div class="beyond-image-wrap"><img src="${item.image}" alt="Illustrated reference for ${item.title}" loading="eager"></div></article>`).join('')}</div>`,
@@ -33,7 +36,13 @@
     const label=document.querySelector('.sidebar nav a[href="#beyond"] span'); if(label) label.textContent='EXTRACURRICULAR';
   }
 
-  function showBeyond(){ Portfolio.activateView('#beyond'); renderBeyond(); history.replaceState(null,'','#beyond'); document.getElementById('beyond')?.scrollIntoView({behavior:'smooth',block:'start'}); }
+  function showBeyond(){
+    Portfolio.activateView('#beyond');
+    if (diagnostics) diagnostics.run('extracurricular section render', renderBeyond);
+    else renderBeyond();
+    history.replaceState(null,'','#beyond');
+    document.getElementById('beyond')?.scrollIntoView({behavior:'smooth',block:'start'});
+  }
   function hideBeyond(){ Portfolio.removePanel('beyond', 'beyond-runtime-style'); }
-  Portfolio.bindPanelRoute({ hash:'#beyond', show:showBeyond, hide:hideBeyond });
+  Portfolio.bindPanelRoute({ hash:'#beyond', scope:'extracurricular navigation', show:showBeyond, hide:hideBeyond });
 })();

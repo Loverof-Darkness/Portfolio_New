@@ -27,9 +27,12 @@
     return style;
   }
 
-  function renderPanel({ id, className, html, styleId, css, parent = '.content' }) {
+  function renderPanel({ id, className, html, styleId, css, parent = '.content', scope = id }) {
     const container = document.querySelector(parent);
-    if (!container) return null;
+    if (!container) {
+      window.portfolioDiagnostics?.reportMissing(scope, `${parent} container`);
+      return null;
+    }
     document.getElementById(id)?.remove();
     document.getElementById(styleId)?.remove();
     const section = document.createElement('section');
@@ -64,26 +67,38 @@
     setActiveNav(hash);
   }
 
-  window.addEventListener('hashchange', () => {
+  const onHashChange = () => {
     const hash = VIEWS.some((entry) => entry.hash === window.location.hash)
       ? window.location.hash
       : '#home';
     activateView(hash);
-  });
+  };
+  window.addEventListener(
+    'hashchange',
+    window.portfolioDiagnostics
+      ? window.portfolioDiagnostics.guard('view hashchange', onHashChange)
+      : onHashChange,
+  );
 
-  function bindPanelRoute({ hash, show, hide }) {
+  function bindPanelRoute({ hash, show, hide, scope = hash }) {
     onReady(() => {
       const link = document.querySelector(`.sidebar nav a[href="${hash}"]`);
-      if (!link) return;
-      link.addEventListener('click', (event) => {
+      if (!link) {
+        window.portfolioDiagnostics?.reportMissing(scope, `the ${hash} sidebar link`);
+        return;
+      }
+      const guard = (fn) => window.portfolioDiagnostics
+        ? window.portfolioDiagnostics.guard(scope, fn)
+        : fn;
+      link.addEventListener('click', guard((event) => {
         event.preventDefault();
         show();
-      });
-      window.addEventListener('hashchange', () => {
+      }));
+      window.addEventListener('hashchange', guard(() => {
         if (window.location.hash === hash) show();
         else hide();
-      });
-      if (window.location.hash === hash) show();
+      }));
+      if (window.location.hash === hash) guard(show)();
     });
   }
 

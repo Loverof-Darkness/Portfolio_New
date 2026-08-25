@@ -1,7 +1,10 @@
 (() => {
+  const diagnostics = window.portfolioDiagnostics;
+
   function renderConnect(){
     Portfolio.renderPanel({
       id:'connect-panel',
+      scope:'connect section',
       className:'connect-panel',
       styleId:'connect-runtime-style',
       html:`
@@ -24,7 +27,7 @@
       .connect-icons{display:flex;align-items:center;gap:30px}.connect-icon{width:104px;height:104px;display:grid;place-items:center;border-radius:50%;text-decoration:none;border:1px solid rgba(0,229,255,.48);background:rgba(3,12,18,.78);box-shadow:0 0 25px rgba(0,229,255,.08),inset 0 0 28px rgba(0,229,255,.035);transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease,border-color .28s ease}.connect-icon svg{width:46px;height:46px;fill:none;stroke:#00e5ff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:transform .28s ease,filter .28s ease}.linkedin-icon{border-color:rgba(139,92,246,.58)}.linkedin-icon svg{fill:#b99cff;stroke:none}.connect-icon:hover{transform:translateY(-7px) scale(1.12);border-color:#00e5ff;box-shadow:0 0 38px rgba(0,229,255,.25),inset 0 0 32px rgba(0,229,255,.08)}.linkedin-icon:hover{border-color:#8b5cf6;box-shadow:0 0 38px rgba(139,92,246,.28),inset 0 0 32px rgba(139,92,246,.08)}.connect-icon:hover svg{transform:scale(1.08);filter:drop-shadow(0 0 8px currentColor)}
       @media(max-width:600px){.connect-icons{gap:22px}.connect-icon{width:84px;height:84px}.connect-icon svg{width:38px;height:38px}}
 
-      /* CONNECT: hard override with a small, deliberate gap after the sidebar. */
+      /* CONNECT: hard override so the header starts exactly at the sidebar edge. */
       body #connect-panel{
         position:fixed!important;
         top:0!important;
@@ -59,13 +62,18 @@
       body #connect-panel .connect-header h2,
       body #connect-panel .connect-header p{margin-left:0!important}
       body #connect-panel .connect-icons{margin-left:0!important;padding-left:0!important;align-self:flex-start!important;justify-content:flex-start!important}
-      @media(max-width:1000px){body #connect-panel{left:210px!important;padding-left:18px!important}}
+      @media(max-width:1000px){body #connect-panel{left:210px!important}}
       @media(max-width:760px){body #connect-panel{left:0!important;padding:24px 20px 40px!important}}
     `,
     });
   }
   window.renderConnect=renderConnect;
-  const showConnect=()=>{Portfolio.activateView('#connect');renderConnect();document.getElementById('connect-panel')?.scrollIntoView({behavior:'smooth',block:'start'});};
+  const showConnect=()=>{
+    Portfolio.activateView('#connect');
+    if (diagnostics) diagnostics.run('connect section render', renderConnect);
+    else renderConnect();
+    document.getElementById('connect-panel')?.scrollIntoView({behavior:'smooth',block:'start'});
+  };
   const hideConnect=()=>Portfolio.removePanel('connect-panel', 'connect-runtime-style');
-  Portfolio.bindPanelRoute({ hash:'#connect', show:showConnect, hide:hideConnect });
+  Portfolio.bindPanelRoute({ hash:'#connect', scope:'connect navigation', show:showConnect, hide:hideConnect });
 })();

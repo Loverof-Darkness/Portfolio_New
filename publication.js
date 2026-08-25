@@ -1,4 +1,6 @@
 (() => {
+  const diagnostics = window.portfolioDiagnostics;
+
   const data = {
     title: 'Berberine Nanoparticles as a Promising Intervention for Diabetic-Wound Healing: A Comprehensive Review',
     journal: 'African Journal of Biomedical Research',
@@ -13,6 +15,7 @@
   function renderPublication() {
     Portfolio.renderPanel({
       id: 'publications',
+      scope: 'publication section',
       className: 'publication-panel',
       styleId: 'publication-runtime-style',
       html: `
@@ -74,10 +77,11 @@
 
   function showPublication(){
     Portfolio.activateView('#publications');
-    renderPublication();
+    if (diagnostics) diagnostics.run('publication section render', renderPublication);
+    else renderPublication();
     history.replaceState(null,'','#publications');
     document.getElementById('publications')?.scrollIntoView({behavior:'smooth',block:'start'});
   }
 
-  Portfolio.bindPanelRoute({ hash:'#publications', show:showPublication, hide:() => Portfolio.removePanel('publications', 'publication-runtime-style') });
+  Portfolio.bindPanelRoute({ hash:'#publications', scope:'publication navigation', show:showPublication, hide:() => Portfolio.removePanel('publications', 'publication-runtime-style') });
 })();

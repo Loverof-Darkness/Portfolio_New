@@ -1,4 +1,6 @@
 (() => {
+  const diagnostics = window.portfolioDiagnostics;
+
   const educationData = [
     {
       number: '01',
@@ -25,6 +27,7 @@
   function renderEducation() {
     const section = Portfolio.renderPanel({
       id: 'education',
+      scope: 'education section',
       className: 'education-panel',
       styleId: 'education-runtime-style',
       html: `
@@ -250,7 +253,8 @@
 
   function showEducation() {
     Portfolio.activateView('#education');
-    renderEducation();
+    if (diagnostics) diagnostics.run('education section render', renderEducation);
+    else renderEducation();
     history.replaceState(null, '', '#education');
     document.getElementById('education')?.scrollIntoView({behavior:'smooth',block:'start'});
   }
@@ -259,5 +263,5 @@
     Portfolio.removePanel('education', 'education-runtime-style');
   }
 
-  Portfolio.bindPanelRoute({ hash:'#education', show:showEducation, hide:hideEducation });
+  Portfolio.bindPanelRoute({ hash:'#education', scope:'education navigation', show:showEducation, hide:hideEducation });
 })();

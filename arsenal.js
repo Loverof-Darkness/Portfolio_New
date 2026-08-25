@@ -16,6 +16,7 @@ function injectScientificArsenalSection() {
 
   Portfolio.renderPanel({
     id: 'arsenal',
+    scope:'arsenal section',
     className: 'arsenal-rebuild',
     styleId: 'arsenal-rebuild-style',
     html: `
@@ -161,9 +162,10 @@ function injectScientificArsenalSection() {
 window.injectScientificArsenalSection = injectScientificArsenalSection;
 
 function renderArsenalIfActive() {
-  if (document.body?.classList.contains('arsenal-active')) {
-    injectScientificArsenalSection();
-  }
+  if (!document.body?.classList.contains('arsenal-active')) return;
+  const diagnostics = window.portfolioDiagnostics;
+  if (diagnostics) diagnostics.run('arsenal section render', injectScientificArsenalSection);
+  else injectScientificArsenalSection();
 }
 
 renderArsenalIfActive();
