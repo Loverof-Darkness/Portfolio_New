@@ -27,6 +27,8 @@
     style.id = id;
     style.textContent = css;
     document.head.appendChild(style);
+    const polish = document.getElementById('professional-polish');
+    if (polish) document.head.appendChild(polish);
     return style;
   }
 

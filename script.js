@@ -26,11 +26,10 @@ const ctx = canvas ? canvas.getContext('2d') : null;
 if (canvas && !ctx) reportMissing('background canvas', 'a usable 2d rendering context');
 
 const palette = [
-  [0, 229, 255],
-  [139, 92, 246],
-  [255, 43, 214],
-  [0, 255, 179],
-  [59, 130, 246],
+  [88, 199, 216],
+  [140, 130, 232],
+  [84, 137, 199],
+  [86, 184, 165],
 ];
 
 let width = 0;
@@ -53,7 +52,7 @@ function resize() {
   canvas.style.height = `${height}px`;
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  const target = Math.min(520, Math.max(220, Math.floor((width * height) / 4000)));
+  const target = Math.min(360, Math.max(150, Math.floor((width * height) / 6500)));
   nodes = Array.from({ length: target }, createNode);
 }
 
@@ -86,7 +85,7 @@ function wrap(node) {
 function drawBackground() {
   if (!ctx) return;
   ctx.clearRect(0, 0, width, height);
-  ctx.fillStyle = '#000';
+  ctx.fillStyle = '#05080e';
   ctx.fillRect(0, 0, width, height);
 }
 
@@ -105,15 +104,15 @@ function drawBonds() {
 
       const proximity = 1 - distance / maxDistance;
       const mix = palette[(i * 7 + j * 3) % palette.length];
-      const alpha = (0.38 + proximity * 0.34) * (0.75 + proximity * 0.25);
+      const alpha = 0.08 + proximity * 0.2;
 
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
-      ctx.lineWidth = 0.65 + proximity * 0.95;
+      ctx.lineWidth = 0.55 + proximity * 0.65;
       ctx.strokeStyle = rgba(mix, alpha);
-      ctx.shadowColor = rgba(mix, 0.3 + proximity * 0.25);
-      ctx.shadowBlur = 4 + proximity * 5;
+      ctx.shadowColor = rgba(mix, 0.14 + proximity * 0.14);
+      ctx.shadowBlur = 3 + proximity * 4;
       ctx.stroke();
       ctx.shadowBlur = 0;
     }
@@ -129,8 +128,8 @@ function drawAtoms(now) {
     const radius = node.radius + wave * 0.65;
 
     const gradient = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, radius * 8);
-    gradient.addColorStop(0, rgba(node.color, 0.24 * glow));
-    gradient.addColorStop(0.28, rgba(node.color, 0.075 * glow));
+    gradient.addColorStop(0, rgba(node.color, 0.16 * glow));
+    gradient.addColorStop(0.28, rgba(node.color, 0.045 * glow));
     gradient.addColorStop(1, rgba(node.color, 0));
 
     ctx.beginPath();
@@ -139,9 +138,9 @@ function drawAtoms(now) {
     ctx.fill();
 
     ctx.beginPath();
-    ctx.fillStyle = rgba(node.color, 0.68 + wave * 0.32);
-    ctx.shadowColor = rgba(node.color, 0.9);
-    ctx.shadowBlur = 8 + wave * 12;
+    ctx.fillStyle = rgba(node.color, 0.56 + wave * 0.24);
+    ctx.shadowColor = rgba(node.color, 0.55);
+    ctx.shadowBlur = 5 + wave * 8;
     ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
