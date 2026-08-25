@@ -1,4 +1,6 @@
 (() => {
+  const diagnostics = window.portfolioDiagnostics;
+
   const educationData = [
     {
       number: '01',
@@ -24,7 +26,10 @@
 
   function renderEducation() {
     const content = document.querySelector('.content');
-    if (!content) return;
+    if (!content) {
+      diagnostics?.reportMissing('education section', '.content container');
+      return;
+    }
 
     document.getElementById('education')?.remove();
     document.getElementById('education-runtime-style')?.remove();
@@ -274,7 +279,8 @@
     document.querySelectorAll('.sidebar nav a').forEach((link) => {
       link.classList.toggle('active', link.getAttribute('href') === '#education');
     });
-    renderEducation();
+    if (diagnostics) diagnostics.run('education section render', renderEducation);
+    else renderEducation();
     history.replaceState(null, '', '#education');
     document.getElementById('education')?.scrollIntoView({behavior:'smooth',block:'start'});
   }
@@ -287,7 +293,10 @@
 
   function bind() {
     const link = document.querySelector('.sidebar nav a[href="#education"]');
-    if (!link) return;
+    if (!link) {
+      diagnostics?.reportMissing('education navigation', 'the #education sidebar link');
+      return;
+    }
     link.addEventListener('click', (event) => {
       event.preventDefault();
       showEducation();

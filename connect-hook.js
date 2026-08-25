@@ -1,4 +1,6 @@
 (() => {
+  const diagnostics = window.portfolioDiagnostics;
+
   const enforceConnectLayout = () => {
     const panel = document.getElementById('connect-panel');
     if (!panel) return;
@@ -29,9 +31,19 @@
     }
   };
 
+  const applyLayout = diagnostics
+    ? diagnostics.guard('connect layout enforcement', enforceConnectLayout)
+    : enforceConnectLayout;
+
   const ensureConnect = () => {
-    if (window.renderConnect) window.renderConnect();
-    requestAnimationFrame(() => requestAnimationFrame(enforceConnectLayout));
+    if (!window.renderConnect) {
+      diagnostics?.reportMissing('connect section render', 'window.renderConnect');
+    } else if (diagnostics) {
+      diagnostics.run('connect section render', window.renderConnect);
+    } else {
+      window.renderConnect();
+    }
+    requestAnimationFrame(() => requestAnimationFrame(applyLayout));
   };
 
   window.addEventListener('hashchange', () => {
@@ -41,7 +53,7 @@
   if (location.hash === '#connect') ensureConnect();
 
   const observer = new MutationObserver(() => {
-    if (location.hash === '#connect') enforceConnectLayout();
+    if (location.hash === '#connect') applyLayout();
   });
   observer.observe(document.documentElement, { childList: true, subtree: true });
 })();

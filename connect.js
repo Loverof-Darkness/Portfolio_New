@@ -1,4 +1,6 @@
 (() => {
+  const diagnostics = window.portfolioDiagnostics;
+
   function hideConnect() {
     document.getElementById('connect-panel')?.remove();
     document.getElementById('connect-runtime-style')?.remove();
@@ -85,8 +87,12 @@
   window.hideConnect = hideConnect;
 
   const sync = () => {
-    if (location.hash === '#connect') renderConnect();
-    else hideConnect();
+    if (location.hash !== '#connect') {
+      hideConnect();
+      return;
+    }
+    if (diagnostics) diagnostics.run('connect section render', renderConnect);
+    else renderConnect();
   };
 
   window.addEventListener('hashchange', sync);

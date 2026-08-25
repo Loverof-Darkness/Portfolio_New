@@ -1,4 +1,6 @@
 (() => {
+  const diagnostics = window.portfolioDiagnostics;
+
   const data = {
     title: 'Berberine Nanoparticles as a Promising Intervention for Diabetic-Wound Healing: A Comprehensive Review',
     journal: 'African Journal of Biomedical Research',
@@ -12,7 +14,10 @@
 
   function renderPublication() {
     const content = document.querySelector('.content');
-    if (!content) return;
+    if (!content) {
+      diagnostics?.reportMissing('publication section', '.content container');
+      return;
+    }
     document.getElementById('publications')?.remove();
     document.getElementById('publication-runtime-style')?.remove();
 
@@ -88,14 +93,18 @@
   }
 
   function showPublication(){
-    renderPublication();
+    if (diagnostics) diagnostics.run('publication section render', renderPublication);
+    else renderPublication();
     history.replaceState(null,'','#publications');
     document.getElementById('publications')?.scrollIntoView({behavior:'smooth',block:'start'});
   }
 
   const bind = () => {
     const link = document.querySelector('.sidebar nav a[href="#publications"]');
-    if (!link) return;
+    if (!link) {
+      diagnostics?.reportMissing('publication navigation', 'the #publications sidebar link');
+      return;
+    }
     link.addEventListener('click', e => { e.preventDefault(); showPublication(); });
     window.addEventListener('hashchange', () => { if (location.hash === '#publications') showPublication(); });
     if (location.hash === '#publications') showPublication();
@@ -104,16 +113,28 @@
 
   const loadBeyond = () => {
     if (document.querySelector('script[data-beyond-loader]')) return;
+    const src = './beyond.js?v=1';
+    if (diagnostics) {
+      diagnostics
+        .loadScript(src, { dataset: { beyondLoader: 'true' } })
+        .catch((error) => diagnostics.reportError('extracurricular script load', error));
+      return;
+    }
     const script = document.createElement('script');
-    script.src = './beyond.js?v=1';
+    script.src = src;
     script.defer = true;
     script.dataset.beyondLoader = 'true';
+    script.addEventListener('error', () => console.error(`[portfolio] failed to load ${src}`), { once: true });
     document.body.appendChild(script);
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadBeyond, {once:true}); else loadBeyond();
 
   function renderConnect(){
-    const content=document.querySelector('.content'); if(!content)return;
+    const content=document.querySelector('.content');
+    if(!content){
+      diagnostics?.reportMissing('connect section','.content container');
+      return;
+    }
     document.getElementById('connect-panel')?.remove();
     document.getElementById('connect-runtime-style')?.remove();
     const section=document.createElement('section');
@@ -126,7 +147,10 @@
   const bindConnect=()=>{
     renderConnect();
     const link=document.querySelector('.sidebar nav a[href="#connect"]');
-    if(!link)return;
+    if(!link){
+      diagnostics?.reportMissing('connect navigation','the #connect sidebar link');
+      return;
+    }
     const show=()=>{renderConnect();document.body.classList.remove('home-active','about-active','experience-active','arsenal-active','education-active','publication-active','beyond-active');document.body.classList.add('connect-active');document.querySelectorAll('.sidebar nav a').forEach(a=>a.classList.toggle('active',a===link));document.getElementById('connect-panel')?.scrollIntoView({behavior:'smooth',block:'start'});};
     link.addEventListener('click',e=>{e.preventDefault();show();});
     window.addEventListener('hashchange',()=>{if(location.hash==='#connect')show();else document.body.classList.remove('connect-active');});
