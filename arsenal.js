@@ -156,7 +156,6 @@ function injectScientificArsenalSection() {
     }
   `,
   });
-  if (!section) return;
 }
 
 window.injectScientificArsenalSection = injectScientificArsenalSection;

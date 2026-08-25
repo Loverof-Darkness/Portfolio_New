@@ -338,8 +338,9 @@ function onArsenalClick(event) { navigateToView(event, 'arsenal'); }
 function setDefaultView() {
   const hash = window.location.hash.replace('#', '');
   const ownViews = ['about','experience','arsenal','home'];
-  const view = Portfolio.VIEWS.some((entry) => entry.view === hash) ? hash : 'home';
-  if (!Portfolio.VIEWS.some((entry) => entry.view === hash) && window.location.hash !== '#home') {
+  const isRegisteredView = Portfolio.VIEWS.some((entry) => entry.view === hash);
+  const view = isRegisteredView ? hash : 'home';
+  if (!isRegisteredView && window.location.hash !== '#home') {
     history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${view}`);
   }
   if (ownViews.includes(view)) setView(view);

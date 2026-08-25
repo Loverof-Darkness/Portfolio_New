@@ -64,6 +64,13 @@
     setActiveNav(hash);
   }
 
+  window.addEventListener('hashchange', () => {
+    const hash = VIEWS.some((entry) => entry.hash === window.location.hash)
+      ? window.location.hash
+      : '#home';
+    activateView(hash);
+  });
+
   function bindPanelRoute({ hash, show, hide }) {
     onReady(() => {
       const link = document.querySelector(`.sidebar nav a[href="${hash}"]`);
@@ -78,15 +85,6 @@
       });
       if (window.location.hash === hash) show();
     });
-  }
-
-  function loadScriptOnce(src, flagName) {
-    if (document.querySelector(`script[data-${flagName}]`)) return;
-    const script = document.createElement('script');
-    script.src = src;
-    script.defer = true;
-    script.dataset[flagName] = '';
-    document.body.appendChild(script);
   }
 
   function gradientText(gradient) {
@@ -106,16 +104,10 @@
   injectStyle('panel-visibility-style', panelVisibilityCss());
   window.Portfolio = {
     VIEWS,
-    onReady,
-    injectStyle,
     renderPanel,
     removePanel,
-    setActiveNav,
-    setBodyView,
     activateView,
     bindPanelRoute,
-    loadScriptOnce,
     gradientText,
-    panelVisibilityCss,
   };
 })();
