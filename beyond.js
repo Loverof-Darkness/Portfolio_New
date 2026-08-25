@@ -31,8 +31,7 @@
       @media(max-width:900px){.beyond-panel{height:auto;min-height:100vh}.beyond-item{grid-template-columns:1fr}.beyond-image-wrap{min-height:220px}.beyond-image-wrap img{border-radius:0 0 16px 16px}.beyond-copy{padding:26px 24px 18px}.beyond-copy h3{font-size:30px}}
     `;
     document.head.appendChild(style);
-    document.body.classList.remove('home-active','about-active','experience-active','arsenal-active','education-active','publication-active');
-    document.body.classList.add('beyond-active');
+    window.activateSection('beyond-active');
     document.querySelectorAll('.sidebar nav a').forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#beyond'));
     const label=document.querySelector('.sidebar nav a[href="#beyond"] span'); if(label) label.textContent='EXTRACURRICULAR';
   }
@@ -47,13 +46,4 @@
     if(location.hash==='#beyond')showBeyond();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
-
-  // Load the icon-only Connect implementation after the page scripts so it replaces the legacy Connect renderer.
-  if(!document.querySelector('script[data-contact-loader]')){
-    const contact=document.createElement('script');
-    contact.src='./contact.js?v=2';
-    contact.defer=true;
-    contact.dataset.contactLoader='true';
-    document.body.appendChild(contact);
-  }
 })();

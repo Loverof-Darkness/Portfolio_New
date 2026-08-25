@@ -472,17 +472,25 @@ function injectScientificArsenalSection() {
   document.head.appendChild(style);
 }
 
+// One section is visible at a time, so exactly one of these classes may sit on <body>.
+// Every section script routes through activateSection so a stale class cannot keep the
+// previous panel's `display:none` rules alive and blank the page.
+const SECTION_BODY_CLASSES = ['home-active','about-active','experience-active','arsenal-active','education-active','publication-active','beyond-active','connect-active'];
+
+function activateSection(activeClass) {
+  SECTION_BODY_CLASSES.forEach((name) => {
+    document.body.classList.toggle(name, name === activeClass);
+  });
+}
+window.activateSection = activateSection;
+
 function setView(view) {
   const allowed = ['home','about','experience','arsenal'];
   const activeView = allowed.includes(view) ? view : 'home';
-  const isAbout = activeView === 'about';
   const isExperience = activeView === 'experience';
   const isArsenal = activeView === 'arsenal';
 
-  document.body.classList.toggle('home-active', activeView === 'home');
-  document.body.classList.toggle('about-active', isAbout);
-  document.body.classList.toggle('experience-active', isExperience);
-  document.body.classList.toggle('arsenal-active', isArsenal);
+  activateSection(`${activeView}-active`);
 
   document.querySelectorAll('.sidebar nav a').forEach((link) => {
     link.classList.toggle('active', link.getAttribute('href') === `#${activeView}`);
@@ -512,8 +520,13 @@ function onAboutClick(event) { navigateToView(event, 'about'); }
 function onExperienceClick(event) { navigateToView(event, 'experience'); }
 function onArsenalClick(event) { navigateToView(event, 'arsenal'); }
 
+// Sections rendered by their own scripts (education.js, publication.js, beyond.js,
+// contact.js). They activate themselves from the hash, so leave those hashes alone.
+const DYNAMIC_VIEWS = ['education','publications','beyond','connect'];
+
 function setDefaultView() {
   const hash = window.location.hash.replace('#', '');
+  if (DYNAMIC_VIEWS.includes(hash)) return;
   const view = ['about','experience','arsenal','home'].includes(hash) ? hash : 'home';
   if (window.location.hash !== `#${view}`) {
     history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${view}`);

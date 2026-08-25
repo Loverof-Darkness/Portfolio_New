@@ -269,8 +269,7 @@
   }
 
   function showEducation() {
-    document.body.classList.remove('home-active','about-active','experience-active','arsenal-active');
-    document.body.classList.add('education-active');
+    window.activateSection('education-active');
     document.querySelectorAll('.sidebar nav a').forEach((link) => {
       link.classList.toggle('active', link.getAttribute('href') === '#education');
     });

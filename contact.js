@@ -35,7 +35,7 @@
   const bindConnect=()=>{
     renderConnect();
     const link=document.querySelector('.sidebar nav a[href="#connect"]'); if(!link)return;
-    const show=()=>{renderConnect();document.body.classList.remove('home-active','about-active','experience-active','arsenal-active','education-active','publication-active','beyond-active');document.body.classList.add('connect-active');document.querySelectorAll('.sidebar nav a').forEach(a=>a.classList.toggle('active',a===link));document.getElementById('connect-panel')?.scrollIntoView({behavior:'smooth',block:'start'});};
+    const show=()=>{renderConnect();history.replaceState(null,'','#connect');window.activateSection('connect-active');document.querySelectorAll('.sidebar nav a').forEach(a=>a.classList.toggle('active',a===link));document.getElementById('connect-panel')?.scrollIntoView({behavior:'smooth',block:'start'});};
     link.addEventListener('click',e=>{e.preventDefault();show();});
     window.addEventListener('hashchange',()=>{if(location.hash==='#connect')show();else document.body.classList.remove('connect-active');});
     if(location.hash==='#connect')show();
