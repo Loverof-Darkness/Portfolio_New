@@ -1,4 +1,6 @@
 (() => {
+  const diagnostics = window.portfolioDiagnostics;
+
   const imageAssets = {
     chess: './assets/extracurricular/chess.webp?v=1',
     volleyball: './assets/extracurricular/volleyball.webp?v=1',
@@ -14,7 +16,11 @@
   ];
 
   function renderBeyond(){
-    const content=document.querySelector('.content'); if(!content)return;
+    const content=document.querySelector('.content');
+    if(!content){
+      diagnostics?.reportMissing('extracurricular section','.content container');
+      return;
+    }
     document.getElementById('beyond')?.remove(); document.getElementById('beyond-runtime-style')?.remove();
     const section=document.createElement('section'); section.id='beyond'; section.className='beyond-panel';
     section.innerHTML=`<header class="beyond-header"><h2>BEYOND THE LAB</h2><p class="beyond-intro">Passions that inspire balance, build discipline, and fuel creativity.</p></header><div class="beyond-list">${activities.map((item,index)=>`<article class="beyond-item" style="--delay:${index*320}ms;--accent:${item.accent}"><div class="beyond-copy"><span class="beyond-index">${item.kicker}</span><h3>${item.title}</h3><p>${item.text}</p></div><div class="beyond-image-wrap"><img src="${item.image}" alt="Illustrated reference for ${item.title}" loading="eager"></div></article>`).join('')}</div>`;
@@ -37,10 +43,19 @@
     const label=document.querySelector('.sidebar nav a[href="#beyond"] span'); if(label) label.textContent='EXTRACURRICULAR';
   }
 
-  function showBeyond(){ renderBeyond(); history.replaceState(null,'','#beyond'); document.getElementById('beyond')?.scrollIntoView({behavior:'smooth',block:'start'}); }
+  function showBeyond(){
+    if(diagnostics) diagnostics.run('extracurricular section render', renderBeyond);
+    else renderBeyond();
+    history.replaceState(null,'','#beyond');
+    document.getElementById('beyond')?.scrollIntoView({behavior:'smooth',block:'start'});
+  }
   function hideBeyond(){ document.body.classList.remove('beyond-active'); document.getElementById('beyond')?.remove(); document.getElementById('beyond-runtime-style')?.remove(); }
   function bind(){
-    const link=document.querySelector('.sidebar nav a[href="#beyond"]'); if(!link)return;
+    const link=document.querySelector('.sidebar nav a[href="#beyond"]');
+    if(!link){
+      diagnostics?.reportMissing('extracurricular navigation','the #beyond sidebar link');
+      return;
+    }
     link.addEventListener('click',e=>{e.preventDefault();showBeyond();});
     document.querySelector('.sidebar nav')?.addEventListener('click',e=>{const other=e.target.closest('a'); if(other && other.getAttribute('href') !== '#beyond') hideBeyond();},true);
     window.addEventListener('hashchange',()=>{if(location.hash==='#beyond')showBeyond();else hideBeyond();});
@@ -50,10 +65,18 @@
 
   // Load the icon-only Connect implementation after the page scripts so it replaces the legacy Connect renderer.
   if(!document.querySelector('script[data-contact-loader]')){
-    const contact=document.createElement('script');
-    contact.src='./contact.js?v=2';
-    contact.defer=true;
-    contact.dataset.contactLoader='true';
-    document.body.appendChild(contact);
+    const src='./contact.js?v=2';
+    if(diagnostics){
+      diagnostics
+        .loadScript(src,{dataset:{contactLoader:'true'}})
+        .catch((error) => diagnostics.reportError('connect script load', error));
+    } else {
+      const contact=document.createElement('script');
+      contact.src=src;
+      contact.defer=true;
+      contact.dataset.contactLoader='true';
+      contact.addEventListener('error',()=>console.error(`[portfolio] failed to load ${src}`),{once:true});
+      document.body.appendChild(contact);
+    }
   }
 })();

@@ -3,7 +3,10 @@ function injectScientificArsenalSection() {
   if (existing) existing.remove();
 
   const content = document.querySelector('.content');
-  if (!content) return;
+  if (!content) {
+    window.portfolioDiagnostics?.reportMissing('arsenal section', '.content container');
+    return;
+  }
 
   const instruments = [
     ['01', 'HPLC', 'Chromatographic Analysis'],
@@ -179,9 +182,10 @@ function injectScientificArsenalSection() {
 window.injectScientificArsenalSection = injectScientificArsenalSection;
 
 function renderArsenalIfActive() {
-  if (document.body?.classList.contains('arsenal-active')) {
-    injectScientificArsenalSection();
-  }
+  if (!document.body?.classList.contains('arsenal-active')) return;
+  const diagnostics = window.portfolioDiagnostics;
+  if (diagnostics) diagnostics.run('arsenal section render', injectScientificArsenalSection);
+  else injectScientificArsenalSection();
 }
 
 renderArsenalIfActive();

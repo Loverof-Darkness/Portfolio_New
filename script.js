@@ -1,5 +1,29 @@
+const diagnostics = window.portfolioDiagnostics;
+
+function reportError(scope, error) {
+  if (diagnostics) diagnostics.reportError(scope, error);
+  else console.error(`[portfolio] ${scope} failed:`, error);
+}
+
+function reportMissing(scope, description) {
+  if (diagnostics) diagnostics.reportMissing(scope, description);
+  else console.warn(`[portfolio] ${scope} skipped: ${description} is missing from the page.`);
+}
+
+function runGuarded(scope, fn) {
+  if (diagnostics) return diagnostics.run(scope, fn);
+  try {
+    return fn();
+  } catch (error) {
+    reportError(scope, error);
+    return undefined;
+  }
+}
+
 const canvas = document.getElementById('molecule-bg');
-const ctx = canvas?.getContext('2d');
+if (!canvas) reportMissing('background canvas', '#molecule-bg');
+const ctx = canvas ? canvas.getContext('2d') : null;
+if (canvas && !ctx) reportMissing('background canvas', 'a usable 2d rendering context');
 
 const palette = [
   [0, 229, 255],
@@ -159,7 +183,7 @@ function frame(now) {
 }
 
 function typeText(element, text, speed = 34) {
-  if (!element) return Promise.resolve();
+  if (!element) return Promise.reject(new Error('typeText called without a target element'));
   const output = element.querySelector('strong, span:not(.typing-caret)') || element;
   const caret = element.querySelector('.typing-caret');
   output.textContent = '';
@@ -167,18 +191,22 @@ function typeText(element, text, speed = 34) {
   element.classList.add('is-typing');
 
   let index = 0;
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const tick = () => {
-      if (index < text.length) {
-        output.textContent += text[index];
-        index += 1;
-        window.setTimeout(tick, speed);
-        return;
+      try {
+        if (index < text.length) {
+          output.textContent += text[index];
+          index += 1;
+          window.setTimeout(tick, speed);
+          return;
+        }
+        element.classList.remove('is-typing');
+        element.classList.add('is-done');
+        if (caret) caret.style.opacity = '0';
+        resolve();
+      } catch (error) {
+        reject(error);
       }
-      element.classList.remove('is-typing');
-      element.classList.add('is-done');
-      if (caret) caret.style.opacity = '0';
-      resolve();
     };
     tick();
   });
@@ -187,7 +215,14 @@ function typeText(element, text, speed = 34) {
 function resetHeroTyping() {
   const intro = document.querySelector('.intro-heading');
   const lines = [...document.querySelectorAll('.summary .typing-line')];
-  if (!intro || lines.length !== 4) return;
+  if (!intro) {
+    reportMissing('hero typing', '.intro-heading');
+    return;
+  }
+  if (lines.length !== 4) {
+    reportMissing('hero typing', `four .summary .typing-line elements (found ${lines.length})`);
+    return;
+  }
 
   const texts = [
     'I am an Analytical Research Scientist specializing in method development',
@@ -208,21 +243,29 @@ function resetHeroTyping() {
     if (caret) caret.style.opacity = '1';
   });
 
-  typeText(intro, "I'm Abhay Gupta.", 55).then(() => {
-    const runLine = (index) => {
-      if (index >= lines.length) return;
-      typeText(lines[index], texts[index], 21).then(() => {
+  const runLine = (index) => {
+    if (index >= lines.length) return;
+    typeText(lines[index], texts[index], 21)
+      .then(() => {
         window.setTimeout(() => runLine(index + 1), 180);
-      });
-    };
-    window.setTimeout(() => runLine(0), 260);
-  });
+      })
+      .catch((error) => reportError(`hero typing (line ${index + 1})`, error));
+  };
+
+  typeText(intro, "I'm Abhay Gupta.", 55)
+    .then(() => {
+      window.setTimeout(() => runLine(0), 260);
+    })
+    .catch((error) => reportError('hero typing (intro)', error));
 }
 
 function injectExperienceSection() {
   if (document.getElementById('experience')) return;
   const content = document.querySelector('.content');
-  if (!content) return;
+  if (!content) {
+    reportMissing('experience section', '.content container');
+    return;
+  }
 
   const experience = document.createElement('section');
   experience.id = 'experience';
@@ -314,7 +357,10 @@ function updateExperienceProgress() {
 function injectScientificArsenalSection() {
   if (document.getElementById('arsenal')) return;
   const content = document.querySelector('.content');
-  if (!content) return;
+  if (!content) {
+    reportMissing('arsenal section', '.content container');
+    return;
+  }
 
   const instruments = [
     'HPLC','UPLC','Ion Chromatography','IR','UV-Visible Spectrophotometer','Zeta Sizer',
@@ -489,10 +535,12 @@ function setView(view) {
   });
 
   if (isExperience) {
-    injectExperienceSection();
-    updateExperienceProgress();
+    runGuarded('experience section render', () => {
+      injectExperienceSection();
+      updateExperienceProgress();
+    });
   }
-  if (isArsenal) injectScientificArsenalSection();
+  if (isArsenal) runGuarded('arsenal section render', injectScientificArsenalSection);
 }
 
 function navigateToView(event, view) {
@@ -519,15 +567,18 @@ function setDefaultView() {
     history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${view}`);
   }
   setView(view);
-  if (view === 'experience') injectExperienceSection();
-  if (view === 'arsenal') injectScientificArsenalSection();
+  if (view === 'experience') runGuarded('experience section render', injectExperienceSection);
+  if (view === 'arsenal') runGuarded('arsenal section render', injectScientificArsenalSection);
   document.getElementById(view)?.scrollIntoView({ behavior: 'auto', block: 'start' });
 }
 
 function setHeroViewport() {
   const hero = document.querySelector('.hero');
   const content = document.querySelector('.content');
-  if (!hero || !content) return;
+  if (!hero || !content) {
+    reportMissing('hero viewport sizing', !hero ? '.hero' : '.content');
+    return;
+  }
   if (window.innerWidth > 760) {
     const styles = getComputedStyle(content);
     const topPad = parseFloat(styles.paddingTop) || 0;
