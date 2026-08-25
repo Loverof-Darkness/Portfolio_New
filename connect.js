@@ -37,13 +37,20 @@
     const style = document.createElement('style');
     style.id = 'connect-runtime-style';
     style.textContent = `
+      /* Connect is viewport-pinned so its header can never be vertically centered by parent layout rules. */
       .connect-panel{
-        position:relative!important;
+        position:fixed!important;
+        z-index:4!important;
+        top:0!important;
+        right:0!important;
+        bottom:0!important;
+        left:250px!important;
+        width:auto!important;
         min-height:100vh!important;
         height:100vh!important;
         box-sizing:border-box!important;
         margin:0!important;
-        padding:12px 0 40px!important;
+        padding:48px clamp(28px,4vw,70px) 40px!important;
         display:flex!important;
         flex-direction:column!important;
         justify-content:flex-start!important;
@@ -71,7 +78,10 @@
       .connect-icon:hover{transform:translateY(-7px) scale(1.12);border-color:#00e5ff;box-shadow:0 0 38px rgba(0,229,255,.25),inset 0 0 32px rgba(0,229,255,.08)}
       .linkedin-icon:hover{border-color:#8b5cf6;box-shadow:0 0 38px rgba(139,92,246,.28),inset 0 0 32px rgba(139,92,246,.08)}
       .connect-icon:hover svg{transform:scale(1.08);filter:drop-shadow(0 0 8px currentColor)}
-      @media(max-width:600px){.connect-panel{padding-top:8px!important}.connect-icons{gap:20px!important}.connect-icon{width:86px;height:86px}.connect-icon svg{width:38px;height:38px}}
+      @media(max-width:760px){
+        .connect-panel{left:0!important;padding:32px 20px 32px!important}
+      }
+      @media(max-width:600px){.connect-icons{gap:20px!important}.connect-icon{width:86px;height:86px}.connect-icon svg{width:38px;height:38px}}
     `;
     document.head.appendChild(style);
   }
