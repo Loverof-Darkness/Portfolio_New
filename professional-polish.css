@@ -1,0 +1,102 @@
+/* Professional academic / industry polish pass */
+:root{--pro-gap:clamp(18px,2.4vw,34px);--pro-muted:#a9b6c5;--pro-text:#edf3f8}
+
+/* Keep the visual identity, reduce oversized editorial treatment. */
+.about-heading,.experience-heading,.arsenal-heading,.education-header h2,.publication-heading,.beyond-header h2,.connect-header h2{
+  font-size:clamp(42px,4.6vw,64px)!important;
+  line-height:.98!important;
+  letter-spacing:-.045em!important;
+  font-weight:850!important;
+  text-shadow:0 0 18px rgba(0,229,255,.08)!important;
+}
+.about-panel,.experience-panel,.arsenal-panel,.education-panel,.publication-panel,.beyond-panel,.connect-panel{scroll-snap-stop:always}
+
+/* About */
+.about-panel{gap:18px!important;padding-top:32px!important}
+.about-profile-card{min-height:128px!important;padding:24px 28px!important;border-radius:12px!important}
+.about-profile-title{font-size:clamp(22px,2.2vw,32px)!important;line-height:1.25!important}
+.about-panel .metrics article{min-height:94px!important;padding:14px 18px!important}
+.about-panel .metrics strong{font-size:38px!important}
+.about-panel .metrics small{font-size:12px!important;font-weight:750!important}
+.about-panel .overview{gap:22px!important;padding:16px!important}
+.about-panel .overview h2{font-size:clamp(30px,3vw,46px)!important}
+.about-panel .skill{font-size:14px!important;margin:14px 0!important}
+
+/* Experience */
+.experience-panel{gap:20px!important;padding-top:32px!important}
+.experience-subtitle{font-size:16px!important;max-width:760px!important;color:var(--pro-muted)!important}
+.career-track{height:76px!important}
+.experience-grid{gap:18px!important}
+.experience-card{padding:24px 26px!important;border-radius:12px!important}
+.experience-card h3{font-size:clamp(25px,2.6vw,36px)!important}
+.experience-card li{font-size:14px!important;line-height:1.5!important}
+
+/* Arsenal */
+.arsenal-panel{gap:20px!important;padding-top:32px!important}
+.arsenal-grid{gap:16px 18px!important}
+.arsenal-item{min-height:108px!important;border-radius:12px!important}
+.arsenal-name{font-size:18px!important;font-weight:800!important}
+.arsenal-number{font-size:14px!important}
+
+/* Education */
+.education-panel{padding-top:30px!important;gap:14px!important}
+.education-header p{font-size:14px!important;color:var(--pro-muted)!important}
+.education-stack{width:min(720px,92%)!important;gap:18px!important}
+.education-card{min-height:280px!important;padding:22px!important;border-radius:14px!important}
+.education-degree{font-size:clamp(23px,2vw,30px)!important}
+.education-institution{font-size:14px!important}
+.education-detail{font-size:12.5px!important}
+
+/* Publication */
+.publication-panel{padding-top:34px!important;gap:28px!important}
+.publication-kicker{font-size:11px!important;margin-bottom:10px!important}
+.publication-tagline{font-size:16px!important;margin:8px 0 20px!important}
+.publication-title{font-size:clamp(25px,2.7vw,36px)!important;line-height:1.12!important;margin:14px 0 10px!important}
+.publication-journal{font-size:13px!important;margin-bottom:16px!important}
+.publication-summary{font-size:14.5px!important;line-height:1.58!important;max-width:680px!important}
+.publication-info-row{grid-template-columns:150px 1fr!important;gap:12px!important}
+.publication-info-row>div{padding:10px 12px!important}
+.publication-info-row strong{font-size:12.5px!important}
+.publication-button{min-height:44px!important;padding:0 15px!important;font-size:10px!important}
+.publication-visual{min-height:540px!important}
+.publication-book{width:min(320px,62%)!important}
+
+/* Extracurricular */
+.beyond-panel{padding-top:28px!important;gap:16px!important}
+.beyond-intro{font-size:15px!important;color:var(--pro-muted)!important}
+.beyond-list{gap:14px!important}
+.beyond-item{min-height:180px!important;border-radius:12px!important}
+.beyond-copy{padding:22px 24px!important}
+.beyond-copy h3{font-size:clamp(24px,2.5vw,34px)!important}
+.beyond-copy p{font-size:14px!important;line-height:1.5!important;margin-top:10px!important}
+.beyond-image-wrap,.beyond-image-wrap img{min-height:180px!important}
+
+/* Connect */
+body #connect-panel{padding-top:28px!important}
+body #connect-panel .connect-header h2{font-size:clamp(42px,4.6vw,64px)!important}
+body #connect-panel .connect-header p:last-child{font-size:15px!important;max-width:680px!important}
+body #connect-panel .connect-icons{gap:22px!important}
+body #connect-panel .connect-icon{width:92px!important;height:92px!important}
+
+/* Sidebar */
+.sidebar{padding-top:20px!important}
+.brand{height:68px!important;margin-bottom:16px!important}
+nav{gap:5px!important}
+nav a{min-height:54px!important;font-size:14px!important}
+.cv-button{margin-top:18px!important}
+.socials{margin-top:18px!important}
+
+/* Mobile */
+@media(max-width:760px){
+  .about-heading,.experience-heading,.arsenal-heading,.education-header h2,.publication-heading,.beyond-header h2,.connect-header h2{font-size:42px!important}
+  .about-profile-card{padding:20px!important}
+  .experience-panel,.publication-panel,.beyond-panel{padding-top:24px!important}
+  .publication-panel{gap:14px!important}
+  .publication-visual{min-height:420px!important}
+  .publication-book{width:260px!important}
+  .beyond-copy h3{font-size:27px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .education-card,.beyond-item,.publication-book{animation:none!important;transform:none!important}
+}
