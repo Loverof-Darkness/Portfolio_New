@@ -1,4 +1,7 @@
 (() => {
+  const diagnostics = window.portfolioDiagnostics;
+  const guard = (scope, fn) => (diagnostics ? diagnostics.guard(scope, fn) : fn);
+
   const VIEWS = [
     { view:'home',         hash:'#home',         bodyClass:'home-active',        selector:'.hero' },
     { view:'about',        hash:'#about',        bodyClass:'about-active',       selector:'.about-panel' },
@@ -30,7 +33,7 @@
   function renderPanel({ id, className, html, styleId, css, parent = '.content', scope = id }) {
     const container = document.querySelector(parent);
     if (!container) {
-      window.portfolioDiagnostics?.reportMissing(scope, `${parent} container`);
+      diagnostics?.reportMissing(scope, `${parent} container`);
       return null;
     }
     document.getElementById(id)?.remove();
@@ -75,30 +78,25 @@
   };
   window.addEventListener(
     'hashchange',
-    window.portfolioDiagnostics
-      ? window.portfolioDiagnostics.guard('view hashchange', onHashChange)
-      : onHashChange,
+    guard('view hashchange', onHashChange),
   );
 
   function bindPanelRoute({ hash, show, hide, scope = hash }) {
     onReady(() => {
       const link = document.querySelector(`.sidebar nav a[href="${hash}"]`);
       if (!link) {
-        window.portfolioDiagnostics?.reportMissing(scope, `the ${hash} sidebar link`);
+        diagnostics?.reportMissing(scope, `the ${hash} sidebar link`);
         return;
       }
-      const guard = (fn) => window.portfolioDiagnostics
-        ? window.portfolioDiagnostics.guard(scope, fn)
-        : fn;
-      link.addEventListener('click', guard((event) => {
+      link.addEventListener('click', guard(scope, (event) => {
         event.preventDefault();
         show();
       }));
-      window.addEventListener('hashchange', guard(() => {
+      window.addEventListener('hashchange', guard(scope, () => {
         if (window.location.hash === hash) show();
         else hide();
       }));
-      if (window.location.hash === hash) guard(show)();
+      if (window.location.hash === hash) guard(scope, show)();
     });
   }
 
