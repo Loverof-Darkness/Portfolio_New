@@ -1,10 +1,4 @@
 function injectScientificArsenalSection() {
-  const existing = document.getElementById('arsenal');
-  if (existing) existing.remove();
-
-  const content = document.querySelector('.content');
-  if (!content) return;
-
   const instruments = [
     ['01', 'HPLC', 'Chromatographic Analysis'],
     ['02', 'UPLC', 'Ultra-High-Performance LC'],
@@ -20,12 +14,13 @@ function injectScientificArsenalSection() {
     ['12', 'Other Wet Chemical Techniques', 'Classical Analytical Techniques'],
   ];
 
-  const section = document.createElement('section');
-  section.id = 'arsenal';
-  section.className = 'arsenal-rebuild';
-  section.innerHTML = `
+  Portfolio.renderPanel({
+    id: 'arsenal',
+    scope:'arsenal section',
+    className: 'arsenal-rebuild',
+    styleId: 'arsenal-rebuild-style',
+    html: `
     <header class="arsenal-rebuild-header">
-      <p class="arsenal-rebuild-kicker">SCIENTIFIC ARSENAL</p>
       <h2>INSTRUMENTS HANDLED</h2>
       <p class="arsenal-rebuild-intro">Hands-on analytical experience across chromatography, spectroscopy, thermal analysis, particle characterization and core wet-chemistry techniques used in pharmaceutical research &amp; development.</p>
     </header>
@@ -38,70 +33,52 @@ function injectScientificArsenalSection() {
         </article>
       `).join('')}
     </div>
-    <div class="arsenal-rebuild-footer">
-      <span class="arsenal-dot"></span>
-      <span>12 analytical platforms • Pharmaceutical analysis • Characterization • Method development support</span>
-    </div>
-  `;
-  content.appendChild(section);
-
-  const style = document.createElement('style');
-  style.id = 'arsenal-rebuild-style';
-  style.textContent = `
-    body.home-active .arsenal-rebuild,
-    body.about-active .arsenal-rebuild,
-    body.experience-active .arsenal-rebuild { display:none !important; }
-    body.arsenal-active .hero,
-    body.arsenal-active .about-panel,
-    body.arsenal-active .experience-panel { display:none !important; }
+  `,
+    css: `
 
     .arsenal-rebuild {
       min-height:100vh;
       height:100vh;
       overflow:auto;
-      padding:34px 0 28px;
+      padding:4px 0 10px;
       scroll-snap-align:start;
       scroll-snap-stop:always;
       display:flex;
       flex-direction:column;
-      gap:24px;
+      gap:12px;
     }
-    .arsenal-rebuild-header { max-width:960px; }
-    .arsenal-rebuild-kicker {
-      margin:0 0 8px;
-      color:#00e5ff;
-      font:800 12px ui-monospace,monospace;
-      letter-spacing:.24em;
+    .arsenal-rebuild-header {
+      max-width:960px;
+      margin:0;
+      padding:0;
     }
     .arsenal-rebuild-header h2 {
       margin:0;
-      font-size:clamp(46px,5.5vw,74px);
-      line-height:.94;
+      font-size:clamp(44px,5.2vw,70px);
+      line-height:.92;
       font-weight:950;
       letter-spacing:-.05em;
-      background:linear-gradient(90deg,#fff 0%,#00e5ff 48%,#8b5cf6 100%);
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
+      ${Portfolio.gradientText('linear-gradient(90deg,#fff 0%,#00e5ff 48%,#8b5cf6 100%)')}
     }
     .arsenal-rebuild-intro {
       max-width:900px;
-      margin:14px 0 0;
+      margin:6px 0 0;
       color:#cbd5e1;
-      font-size:17px;
+      font-size:15px;
       font-weight:600;
-      line-height:1.55;
+      line-height:1.35;
     }
     .arsenal-rebuild-grid {
       display:grid;
       grid-template-columns:repeat(4,minmax(0,1fr));
       grid-template-rows:repeat(3,minmax(125px,1fr));
-      gap:18px 22px;
+      gap:16px 20px;
       flex:1 1 auto;
+      min-height:0;
     }
     .arsenal-rebuild-card {
       min-height:125px;
-      padding:20px 18px;
+      padding:18px 18px;
       border:1px solid rgba(0,229,255,.26);
       border-radius:16px;
       background:linear-gradient(145deg,rgba(3,15,22,.88),rgba(2,6,11,.82));
@@ -139,7 +116,7 @@ function injectScientificArsenalSection() {
       color:#00e5ff;
       font:900 16px ui-monospace,monospace;
       letter-spacing:.08em;
-      margin-bottom:8px;
+      margin-bottom:7px;
     }
     .arsenal-rebuild-card h3 {
       margin:0;
@@ -149,58 +126,49 @@ function injectScientificArsenalSection() {
       font-weight:950;
     }
     .arsenal-rebuild-card p {
-      margin:8px 0 0;
+      margin:7px 0 0;
       color:#8fdceb;
       font:700 11px ui-monospace,monospace;
       letter-spacing:.08em;
       text-transform:uppercase;
-    }
-    .arsenal-rebuild-footer {
-      display:flex;
-      align-items:center;
-      gap:10px;
-      color:#91a4b7;
-      font:700 11px ui-monospace,monospace;
-      letter-spacing:.08em;
-    }
-    .arsenal-dot {
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:#00ffb3;
-      box-shadow:0 0 12px rgba(0,255,179,.8);
-      flex:0 0 auto;
     }
     @keyframes arsenalRebuildIn {
       from { opacity:0; transform:translateY(24px) scale(.95); }
       to { opacity:1; transform:translateY(0) scale(1); }
     }
     @media(max-width:900px){
-      .arsenal-rebuild-header h2{font-size:50px}
-      .arsenal-rebuild-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(112px,1fr));gap:16px}
+      .arsenal-rebuild-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(4,minmax(112px,1fr));gap:14px}
       .arsenal-rebuild-card:nth-child(1){grid-column:1;grid-row:1}.arsenal-rebuild-card:nth-child(2){grid-column:2;grid-row:1}.arsenal-rebuild-card:nth-child(3){grid-column:3;grid-row:1}
       .arsenal-rebuild-card:nth-child(4){grid-column:3;grid-row:2}.arsenal-rebuild-card:nth-child(5){grid-column:2;grid-row:2}.arsenal-rebuild-card:nth-child(6){grid-column:1;grid-row:2}
       .arsenal-rebuild-card:nth-child(7){grid-column:1;grid-row:3}.arsenal-rebuild-card:nth-child(8){grid-column:2;grid-row:3}.arsenal-rebuild-card:nth-child(9){grid-column:3;grid-row:3}
       .arsenal-rebuild-card:nth-child(10){grid-column:3;grid-row:4}.arsenal-rebuild-card:nth-child(11){grid-column:2;grid-row:4}.arsenal-rebuild-card:nth-child(12){grid-column:1;grid-row:4}
     }
     @media(max-width:600px){
-      .arsenal-rebuild{height:auto;min-height:100vh}
+      .arsenal-rebuild{height:auto;min-height:100vh;padding-top:6px}
       .arsenal-rebuild-header h2{font-size:42px}
-      .arsenal-rebuild-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(6,minmax(100px,1fr));gap:12px}
+      .arsenal-rebuild-grid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(6,minmax(100px,1fr));gap:10px}
       .arsenal-rebuild-card:nth-child(1){grid-column:1;grid-row:1}.arsenal-rebuild-card:nth-child(2){grid-column:2;grid-row:1}
       .arsenal-rebuild-card:nth-child(3){grid-column:2;grid-row:2}.arsenal-rebuild-card:nth-child(4){grid-column:1;grid-row:2}
       .arsenal-rebuild-card:nth-child(5){grid-column:1;grid-row:3}.arsenal-rebuild-card:nth-child(6){grid-column:2;grid-row:3}
       .arsenal-rebuild-card:nth-child(7){grid-column:2;grid-row:4}.arsenal-rebuild-card:nth-child(8){grid-column:1;grid-row:4}
       .arsenal-rebuild-card:nth-child(9){grid-column:1;grid-row:5}.arsenal-rebuild-card:nth-child(10){grid-column:2;grid-row:5}
       .arsenal-rebuild-card:nth-child(11){grid-column:2;grid-row:6}.arsenal-rebuild-card:nth-child(12){grid-column:1;grid-row:6}
-      .arsenal-rebuild-card h3{font-size:16px}.arsenal-rebuild-intro{font-size:15px}
+      .arsenal-rebuild-card h3{font-size:16px}.arsenal-rebuild-intro{font-size:14px}
     }
-  `;
-  document.head.appendChild(style);
+  `,
+  });
 }
 
-if (!document.body.classList.contains('arsenal-active')) return;
-injectScientificArsenalSection();
-document.querySelectorAll('.sidebar nav a').forEach((link) => {
-  link.classList.toggle('active', link.getAttribute('href') === '#arsenal');
-});
+window.injectScientificArsenalSection = injectScientificArsenalSection;
+
+function renderArsenalIfActive() {
+  if (!document.body?.classList.contains('arsenal-active')) return;
+  const diagnostics = window.portfolioDiagnostics;
+  if (diagnostics) diagnostics.run('arsenal section render', injectScientificArsenalSection);
+  else injectScientificArsenalSection();
+}
+
+renderArsenalIfActive();
+window.addEventListener('hashchange', renderArsenalIfActive);
+setTimeout(renderArsenalIfActive, 100);
+setTimeout(renderArsenalIfActive, 400);
