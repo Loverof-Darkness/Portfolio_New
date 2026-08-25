@@ -380,6 +380,13 @@ function onAboutClick(event) { navigateToView(event, 'about'); }
 function onExperienceClick(event) { navigateToView(event, 'experience'); }
 function onArsenalClick(event) { navigateToView(event, 'arsenal'); }
 
+window.addEventListener('hashchange', () => {
+  runGuarded('view hashchange', () => {
+    const view = window.location.hash.replace('#', '');
+    if (['home', 'about', 'experience', 'arsenal'].includes(view)) setView(view);
+  });
+});
+
 function setDefaultView() {
   const hash = window.location.hash.replace('#', '');
   const ownViews = ['about','experience','arsenal','home'];
