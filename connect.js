@@ -10,11 +10,7 @@
       return;
     }
 
-    const content = document.querySelector('.content');
-    if (!content) return;
-
     hideConnect();
-
     const section = document.createElement('section');
     section.id = 'connect-panel';
     section.className = 'connect-panel';
@@ -32,12 +28,12 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 3.5a2.2 2.2 0 1 1 0 4.4 2.2 2.2 0 0 1 0-4.4ZM3.4 9h3.6v11H3.4zM9.2 9h3.4v1.5h.05c.48-.9 1.67-1.85 3.45-1.85 3.69 0 4.37 2.43 4.37 5.59V20h-3.6v-5.1c0-1.22-.02-2.79-1.8-2.79-1.8 0-2.08 1.33-2.08 2.7V20H9.2z"/></svg>
         </a>
       </div>`;
-    content.appendChild(section);
+
+    document.body.appendChild(section);
 
     const style = document.createElement('style');
     style.id = 'connect-runtime-style';
     style.textContent = `
-      /* Connect is viewport-pinned so its header can never be vertically centered by parent layout rules. */
       .connect-panel{
         position:fixed!important;
         z-index:4!important;
@@ -50,7 +46,7 @@
         height:100vh!important;
         box-sizing:border-box!important;
         margin:0!important;
-        padding:48px clamp(28px,4vw,70px) 40px!important;
+        padding:30px 0 40px 0!important;
         display:flex!important;
         flex-direction:column!important;
         justify-content:flex-start!important;
@@ -59,10 +55,11 @@
         gap:34px!important;
         overflow:auto!important;
         transform:none!important;
+        text-align:left!important;
       }
       .connect-header{
         width:100%!important;
-        max-width:1000px!important;
+        max-width:none!important;
         margin:0!important;
         padding:0!important;
         text-align:left!important;
@@ -78,10 +75,8 @@
       .connect-icon:hover{transform:translateY(-7px) scale(1.12);border-color:#00e5ff;box-shadow:0 0 38px rgba(0,229,255,.25),inset 0 0 32px rgba(0,229,255,.08)}
       .linkedin-icon:hover{border-color:#8b5cf6;box-shadow:0 0 38px rgba(139,92,246,.28),inset 0 0 32px rgba(139,92,246,.08)}
       .connect-icon:hover svg{transform:scale(1.08);filter:drop-shadow(0 0 8px currentColor)}
-      @media(max-width:760px){
-        .connect-panel{left:0!important;padding:32px 20px 32px!important}
-      }
-      @media(max-width:600px){.connect-icons{gap:20px!important}.connect-icon{width:86px;height:86px}.connect-icon svg{width:38px;height:38px}}
+      @media(max-width:1000px){.connect-panel{left:210px!important}}
+      @media(max-width:760px){.connect-panel{left:0!important;padding:24px 20px 40px!important}.connect-icons{gap:20px!important}.connect-icon{width:86px;height:86px}.connect-icon svg{width:38px;height:38px}}
     `;
     document.head.appendChild(style);
   }
