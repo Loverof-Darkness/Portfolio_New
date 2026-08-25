@@ -19,7 +19,7 @@ body.arsenal-active .arsenal-item-9{grid-column:1;grid-row:3}body.arsenal-active
 @media(max-width:900px){body.arsenal-active .arsenal-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important}body.arsenal-active .arsenal-item-1{grid-column:1;grid-row:1}body.arsenal-active .arsenal-item-2{grid-column:2;grid-row:1}body.arsenal-active .arsenal-item-3{grid-column:2;grid-row:2}body.arsenal-active .arsenal-item-4{grid-column:1;grid-row:2}body.arsenal-active .arsenal-item-5{grid-column:1;grid-row:3}body.arsenal-active .arsenal-item-6{grid-column:2;grid-row:3}body.arsenal-active .arsenal-item-7{grid-column:2;grid-row:4}body.arsenal-active .arsenal-item-8{grid-column:1;grid-row:4}body.arsenal-active .arsenal-item-9{grid-column:1;grid-row:5}body.arsenal-active .arsenal-item-10{grid-column:2;grid-row:5}body.arsenal-active .arsenal-item-11{grid-column:2;grid-row:6}body.arsenal-active .arsenal-item-12{grid-column:1;grid-row:6}}
 @media(max-width:600px){body.arsenal-active .arsenal-panel{height:auto!important;min-height:100vh!important}body.arsenal-active .arsenal-grid{grid-template-columns:1fr!important;gap:12px!important}body.arsenal-active .arsenal-item-1,body.arsenal-active .arsenal-item-2,body.arsenal-active .arsenal-item-3,body.arsenal-active .arsenal-item-4,body.arsenal-active .arsenal-item-5,body.arsenal-active .arsenal-item-6,body.arsenal-active .arsenal-item-7,body.arsenal-active .arsenal-item-8,body.arsenal-active .arsenal-item-9,body.arsenal-active .arsenal-item-10,body.arsenal-active .arsenal-item-11,body.arsenal-active .arsenal-item-12{grid-column:1!important}.arsenal-item-1{grid-row:1}.arsenal-item-2{grid-row:2}.arsenal-item-3{grid-row:3}.arsenal-item-4{grid-row:4}.arsenal-item-5{grid-row:5}.arsenal-item-6{grid-row:6}.arsenal-item-7{grid-row:7}.arsenal-item-8{grid-row:8}.arsenal-item-9{grid-row:9}.arsenal-item-10{grid-row:10}.arsenal-item-11{grid-row:11}.arsenal-item-12{grid-row:12}}
 
-/* CONNECT: hard override with a small, deliberate gap after the sidebar. */
+/* CONNECT: hard override so the header starts exactly at the sidebar edge. */
 body #connect-panel{
   position:fixed!important;
   top:0!important;
@@ -54,5 +54,19 @@ body #connect-panel .connect-kicker,
 body #connect-panel .connect-header h2,
 body #connect-panel .connect-header p{margin-left:0!important}
 body #connect-panel .connect-icons{margin-left:0!important;padding-left:0!important;align-self:flex-start!important;justify-content:flex-start!important}
-@media(max-width:1000px){body #connect-panel{left:210px!important;padding-left:18px!important}}
+@media(max-width:1000px){body #connect-panel{left:210px!important}}
 @media(max-width:760px){body #connect-panel{left:0!important;padding:24px 20px 40px!important}}
+
+/* SIDEBAR: allow the complete navigation to scroll independently. */
+.sidebar{
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(0,229,255,.45) rgba(255,255,255,.03);
+}
+.sidebar::-webkit-scrollbar{width:7px}
+.sidebar::-webkit-scrollbar-track{background:rgba(255,255,255,.025)}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(0,229,255,.42);border-radius:8px}
+.sidebar::-webkit-scrollbar-thumb:hover{background:rgba(0,229,255,.7)}
+@media(max-width:760px){.sidebar{overflow-x:auto!important;overflow-y:hidden!important}}
