@@ -36,12 +36,12 @@
     style.textContent = `
       .connect-panel{
         position:fixed!important;
-        z-index:4!important;
+        z-index:20!important;
         top:0!important;
         right:0!important;
         bottom:0!important;
         left:250px!important;
-        width:auto!important;
+        width:calc(100vw - 250px)!important;
         min-height:100vh!important;
         height:100vh!important;
         box-sizing:border-box!important;
@@ -75,8 +75,8 @@
       .connect-icon:hover{transform:translateY(-7px) scale(1.12);border-color:#00e5ff;box-shadow:0 0 38px rgba(0,229,255,.25),inset 0 0 32px rgba(0,229,255,.08)}
       .linkedin-icon:hover{border-color:#8b5cf6;box-shadow:0 0 38px rgba(139,92,246,.28),inset 0 0 32px rgba(139,92,246,.08)}
       .connect-icon:hover svg{transform:scale(1.08);filter:drop-shadow(0 0 8px currentColor)}
-      @media(max-width:1000px){.connect-panel{left:210px!important}}
-      @media(max-width:760px){.connect-panel{left:0!important;padding:24px 20px 40px!important}.connect-icons{gap:20px!important}.connect-icon{width:86px;height:86px}.connect-icon svg{width:38px;height:38px}}
+      @media(max-width:1000px){.connect-panel{left:210px!important;width:calc(100vw - 210px)!important}}
+      @media(max-width:760px){.connect-panel{left:0!important;width:100vw!important;padding:24px 20px 40px 0!important}.connect-icons{gap:20px!important}.connect-icon{width:86px;height:86px}.connect-icon svg{width:38px;height:38px}}
     `;
     document.head.appendChild(style);
   }
