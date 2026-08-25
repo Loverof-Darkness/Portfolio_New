@@ -1,4 +1,5 @@
 const diagnostics = window.portfolioDiagnostics;
+const CORE_VIEWS = ['home', 'about', 'experience', 'arsenal'];
 
 function reportError(scope, error) {
   if (diagnostics) diagnostics.reportError(scope, error);
@@ -345,8 +346,7 @@ function updateExperienceProgress() {
 }
 
 function setView(view) {
-  const allowed = ['home','about','experience','arsenal'];
-  const activeView = allowed.includes(view) ? view : 'home';
+  const activeView = CORE_VIEWS.includes(view) ? view : 'home';
   const isExperience = activeView === 'experience';
   const isArsenal = activeView === 'arsenal';
 
@@ -380,15 +380,21 @@ function onAboutClick(event) { navigateToView(event, 'about'); }
 function onExperienceClick(event) { navigateToView(event, 'experience'); }
 function onArsenalClick(event) { navigateToView(event, 'arsenal'); }
 
+window.addEventListener('hashchange', () => {
+  runGuarded('view hashchange', () => {
+    const view = window.location.hash.replace('#', '');
+    if (CORE_VIEWS.includes(view)) setView(view);
+  });
+});
+
 function setDefaultView() {
   const hash = window.location.hash.replace('#', '');
-  const ownViews = ['about','experience','arsenal','home'];
   const isRegisteredView = Portfolio.VIEWS.some((entry) => entry.view === hash);
   const view = isRegisteredView ? hash : 'home';
   if (!isRegisteredView && window.location.hash !== '#home') {
     history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${view}`);
   }
-  if (ownViews.includes(view)) setView(view);
+  if (CORE_VIEWS.includes(view)) setView(view);
   else Portfolio.activateView(`#${view}`);
   if (view === 'experience') runGuarded('experience section render', () => {
     injectExperienceSection();
