@@ -37,7 +37,7 @@
       script.defer = defer;
       Object.entries(dataset).forEach(([key, value]) => { script.dataset[key] = value; });
       script.addEventListener('load', () => resolve(script), { once: true });
-      script.addEventListener('error', () => reject(new Error(`Failed to load script "${src}"`)), { once: true });
+      script.addEventListener('error', () => reject(new Error(`Failed to load script \"${src}\"`)), { once: true });
       document.body.appendChild(script);
     });
   }
@@ -51,7 +51,35 @@
     document.head.appendChild(link);
   }
 
-  loadStylesheet('./professional-polish.css?v=1', 'professional-polish');
+  function installHeroCleanup() {
+    if (document.getElementById('hero-cleanup-style')) return;
+    const style = document.createElement('style');
+    style.id = 'hero-cleanup-style';
+    style.textContent = `
+      /* Remove the framed/window-like backdrop behind the hero portrait. */
+      .hero .portrait-wrap::before,
+      .hero .portrait-wrap::after {
+        display: none !important;
+        content: none !important;
+        border: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+      .hero .portrait-wrap {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        clip-path: none !important;
+      }
+      .hero .portrait-glow {
+        opacity: .72 !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  loadStylesheet('./professional-polish.css?v=2', 'professional-polish');
+  installHeroCleanup();
 
   window.addEventListener('error', (event) => {
     const target = event.target;
