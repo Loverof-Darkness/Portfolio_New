@@ -221,13 +221,11 @@ function resetHeroTyping() {
 
 function injectExperienceSection() {
   if (document.getElementById('experience')) return;
-  const content = document.querySelector('.content');
-  if (!content) return;
-
-  const experience = document.createElement('section');
-  experience.id = 'experience';
-  experience.className = 'experience-panel';
-  experience.innerHTML = `
+  const experience = Portfolio.renderPanel({
+    id: 'experience',
+    className: 'experience-panel',
+    styleId: 'experience-runtime-styles',
+    html: `
     <div class="experience-header-wrap">
       <h2 class="experience-heading">PROFESSIONAL EXPERIENCE</h2>
       <p class="experience-subtitle">From the beginning of my analytical career to my current role in pharmaceutical research &amp; development.</p>
@@ -263,17 +261,11 @@ function injectExperienceSection() {
       </article>
     </div>
     <div class="experience-footer"><span class="live-pulse"></span><span>CAREER IN MOTION</span><strong class="experience-duration">Calculating current trajectory…</strong></div>
-  `;
-  content.appendChild(experience);
-
-  const style = document.createElement('style');
-  style.id = 'experience-runtime-styles';
-  style.textContent = `
+  `,
+    css: `
     .experience-panel{min-height:100vh;height:100vh;overflow:auto;padding:50px 0 42px;scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;gap:26px}
-    body.home-active .experience-panel,body.about-active .experience-panel,body.arsenal-active .experience-panel{display:none!important}
-    body.experience-active .hero,body.experience-active .about-panel,body.arsenal-active .hero,body.arsenal-active .about-panel{display:none!important}
     .experience-header-wrap{max-width:980px}
-    .experience-heading{margin:0;font-size:clamp(48px,5.5vw,76px);line-height:.92;font-weight:900;letter-spacing:-.05em;background:linear-gradient(90deg,#fff,#00e5ff 48%,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 24px rgba(0,229,255,.14)}
+    .experience-heading{margin:0;font-size:clamp(48px,5.5vw,76px);line-height:.92;font-weight:900;letter-spacing:-.05em;${Portfolio.gradientText('linear-gradient(90deg,#fff,#00e5ff 48%,#8b5cf6)')}text-shadow:0 0 24px rgba(0,229,255,.14)}
     .experience-subtitle{margin:14px 0 0;max-width:820px;color:#cbd5e1;font-size:18px;font-weight:600;line-height:1.55}
     .career-track{position:relative;height:92px;margin:4px 8px 0;display:grid;grid-template-columns:1fr 1fr 1fr;align-items:start}
     .career-track-line,.career-track-progress{position:absolute;left:1%;right:1%;top:27px;height:4px;border-radius:5px}
@@ -289,8 +281,8 @@ function injectExperienceSection() {
     .experience-card.current{border-color:rgba(0,229,255,.58)}.experience-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.experience-status{color:#00e5ff;font:800 11px ui-monospace,monospace;letter-spacing:.17em}.experience-card time{color:#cbd5e1;font:700 12px ui-monospace,monospace}.experience-card h3{margin:0;color:#fff;font-size:clamp(28px,3vw,40px);font-weight:900;line-height:1.08}.experience-company{margin:7px 0 18px;color:#9bdfff;font:900 16px ui-monospace,monospace;letter-spacing:.14em}.experience-card ul{margin:0;padding-left:21px;color:#d7e0eb;display:grid;gap:12px}.experience-card li{font-size:15px;font-weight:600;line-height:1.48}.experience-footer{display:flex;align-items:center;gap:10px;margin-top:auto;color:#9fb0c1;font:800 11px ui-monospace,monospace;letter-spacing:.16em}.experience-footer strong{margin-left:auto;color:#dce7f3;font-size:12px}.live-pulse{width:8px;height:8px;border-radius:50%;background:#00ffb3;box-shadow:0 0 12px rgba(0,255,179,.8);animation:careerPulse 1.4s ease-in-out infinite}
     @keyframes careerPulse{0%,100%{transform:scale(.9);opacity:.72;box-shadow:0 0 10px rgba(0,229,255,.4)}50%{transform:scale(1.18);opacity:1;box-shadow:0 0 24px rgba(0,229,255,.95)}}
     @media(max-width:760px){.experience-panel{height:auto;min-height:100vh}.experience-grid{grid-template-columns:1fr}.experience-heading{font-size:46px}.experience-card li{font-size:14px}}
-  `;
-  document.head.appendChild(style);
+  `,
+  });
 }
 
 function updateExperienceProgress() {
@@ -311,188 +303,19 @@ function updateExperienceProgress() {
   }
 }
 
-function injectScientificArsenalSection() {
-  if (document.getElementById('arsenal')) return;
-  const content = document.querySelector('.content');
-  if (!content) return;
-
-  const instruments = [
-    'HPLC','UPLC','Ion Chromatography','IR','UV-Visible Spectrophotometer','Zeta Sizer',
-    'DSC','TGA','Viscometer','pH meter','Osmometer','Other Wet Chemical Techniques',
-  ];
-
-  const arsenal = document.createElement('section');
-  arsenal.id = 'arsenal';
-  arsenal.className = 'arsenal-panel';
-  arsenal.innerHTML = `
-    <div class="arsenal-header-wrap">
-      <h2 class="arsenal-heading">INSTRUMENTS HANDLED</h2>
-    </div>
-    <div class="arsenal-grid" role="list" aria-label="Analytical instruments handled">
-      ${instruments.map((name, index) => `
-        <button class="arsenal-item arsenal-item-${index + 1}" type="button" role="listitem" data-index="${index}" aria-label="${name}">
-          <span class="arsenal-number">${index + 1}.</span>
-          <span class="arsenal-name">${name}</span>
-        </button>
-      `).join('')}
-    </div>
-  `;
-  content.appendChild(arsenal);
-
-  const items = [...arsenal.querySelectorAll('.arsenal-item')];
-  items.forEach((item) => {
-    const activate = () => {
-      items.forEach((node) => node.classList.remove('is-selected'));
-      item.classList.add('is-selected');
-    };
-    item.addEventListener('mouseenter', activate);
-    item.addEventListener('focus', activate);
-    item.addEventListener('click', activate);
-  });
-
-  const style = document.createElement('style');
-  style.id = 'arsenal-runtime-styles';
-  style.textContent = `
-    body.arsenal-active .hero,
-    body.arsenal-active .about-panel,
-    body.arsenal-active .experience-panel { display:none!important; }
-    body.home-active .arsenal-panel,
-    body.about-active .arsenal-panel,
-    body.experience-active .arsenal-panel { display:none!important; }
-
-    .arsenal-panel {
-      min-height:100vh!important;
-      height:100vh!important;
-      overflow:auto!important;
-      padding:30px 0 40px!important;
-      display:flex!important;
-      flex-direction:column!important;
-      gap:28px!important;
-      scroll-snap-align:start!important;
-    }
-    .arsenal-header-wrap {
-      width:100%!important;
-      text-align:left!important;
-      margin:0!important;
-    }
-    .arsenal-heading {
-      margin:0!important;
-      font-size:clamp(44px,5.1vw,68px)!important;
-      line-height:.96!important;
-      font-weight:900!important;
-      background:linear-gradient(90deg,#fff,#00e5ff 45%,#8b5cf6)!important;
-      -webkit-background-clip:text!important;
-      background-clip:text!important;
-      color:transparent!important;
-    }
-    .arsenal-grid {
-      width:100%!important;
-      display:grid!important;
-      grid-template-columns:repeat(4,minmax(0,1fr))!important;
-      grid-auto-rows:minmax(125px,auto)!important;
-      gap:22px 24px!important;
-      padding:8px 0 30px!important;
-      align-items:stretch!important;
-    }
-    .arsenal-item {
-      position:relative!important;
-      inset:auto!important;
-      left:auto!important;
-      top:auto!important;
-      width:auto!important;
-      min-width:0!important;
-      min-height:125px!important;
-      height:auto!important;
-      padding:20px 16px!important;
-      margin:0!important;
-      transform:none!important;
-      opacity:0!important;
-      animation:arsenalGridPop .65s cubic-bezier(.2,.8,.2,1) forwards!important;
-      animation-delay:calc(var(--i,0) * 420ms)!important;
-      border:1px solid rgba(0,229,255,.38)!important;
-      border-radius:14px!important;
-      background:rgba(3,10,16,.82)!important;
-      backdrop-filter:blur(10px)!important;
-      -webkit-backdrop-filter:blur(10px)!important;
-      display:flex!important;
-      flex-direction:column!important;
-      align-items:center!important;
-      justify-content:center!important;
-      gap:8px!important;
-      box-shadow:inset 0 0 30px rgba(0,229,255,.025),0 0 22px rgba(0,0,0,.22)!important;
-    }
-    .arsenal-number {
-      display:block!important;
-      color:#00e5ff!important;
-      font:900 17px ui-monospace,monospace!important;
-      letter-spacing:.06em!important;
-    }
-    .arsenal-name {
-      display:block!important;
-      max-width:100%!important;
-      color:#f2fbff!important;
-      font-size:22px!important;
-      font-weight:900!important;
-      line-height:1.16!important;
-      text-align:center!important;
-    }
-    .arsenal-item:hover,.arsenal-item:focus-visible,.arsenal-item.is-selected {
-      transform:translateY(-4px)!important;
-      border-color:rgba(0,229,255,.92)!important;
-      box-shadow:0 0 28px rgba(0,229,255,.16),inset 0 0 25px rgba(139,92,246,.06)!important;
-      outline:none!important;
-    }
-    @keyframes arsenalGridPop {
-      0% { opacity:0; transform:translateY(28px) scale(.94); }
-      70% { opacity:1; transform:translateY(-3px) scale(1.02); }
-      100% { opacity:1; transform:translateY(0) scale(1); }
-    }
-
-    /* Desktop snake: 1→4, 5→8 right-to-left, 9→12 left-to-right */
-    .arsenal-item-1{grid-column:1;grid-row:1}.arsenal-item-2{grid-column:2;grid-row:1}.arsenal-item-3{grid-column:3;grid-row:1}.arsenal-item-4{grid-column:4;grid-row:1}
-    .arsenal-item-5{grid-column:4;grid-row:2}.arsenal-item-6{grid-column:3;grid-row:2}.arsenal-item-7{grid-column:2;grid-row:2}.arsenal-item-8{grid-column:1;grid-row:2}
-    .arsenal-item-9{grid-column:1;grid-row:3}.arsenal-item-10{grid-column:2;grid-row:3}.arsenal-item-11{grid-column:3;grid-row:3}.arsenal-item-12{grid-column:4;grid-row:3}
-
-    @media(max-width:900px) {
-      .arsenal-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:minmax(115px,auto)!important;gap:18px!important}
-      .arsenal-item-1{grid-column:1;grid-row:1}.arsenal-item-2{grid-column:2;grid-row:1}.arsenal-item-3{grid-column:2;grid-row:2}.arsenal-item-4{grid-column:1;grid-row:2}
-      .arsenal-item-5{grid-column:1;grid-row:3}.arsenal-item-6{grid-column:2;grid-row:3}.arsenal-item-7{grid-column:2;grid-row:4}.arsenal-item-8{grid-column:1;grid-row:4}
-      .arsenal-item-9{grid-column:1;grid-row:5}.arsenal-item-10{grid-column:2;grid-row:5}.arsenal-item-11{grid-column:2;grid-row:6}.arsenal-item-12{grid-column:1;grid-row:6}
-      .arsenal-name{font-size:19px!important}
-    }
-    @media(max-width:600px) {
-      .arsenal-panel{height:auto!important;min-height:100vh!important}
-      .arsenal-heading{font-size:42px!important}
-      .arsenal-grid{grid-template-columns:1fr!important;grid-auto-rows:minmax(92px,auto)!important;gap:12px!important}
-      .arsenal-item-1,.arsenal-item-2,.arsenal-item-3,.arsenal-item-4,.arsenal-item-5,.arsenal-item-6,.arsenal-item-7,.arsenal-item-8,.arsenal-item-9,.arsenal-item-10,.arsenal-item-11,.arsenal-item-12{grid-column:1!important}
-      .arsenal-item-1{grid-row:1}.arsenal-item-2{grid-row:2}.arsenal-item-3{grid-row:3}.arsenal-item-4{grid-row:4}.arsenal-item-5{grid-row:5}.arsenal-item-6{grid-row:6}.arsenal-item-7{grid-row:7}.arsenal-item-8{grid-row:8}.arsenal-item-9{grid-row:9}.arsenal-item-10{grid-row:10}.arsenal-item-11{grid-row:11}.arsenal-item-12{grid-row:12}
-      .arsenal-item{min-height:90px!important}.arsenal-name{font-size:18px!important}
-    }
-  `;
-  document.head.appendChild(style);
-}
-
 function setView(view) {
   const allowed = ['home','about','experience','arsenal'];
   const activeView = allowed.includes(view) ? view : 'home';
-  const isAbout = activeView === 'about';
   const isExperience = activeView === 'experience';
   const isArsenal = activeView === 'arsenal';
 
-  document.body.classList.toggle('home-active', activeView === 'home');
-  document.body.classList.toggle('about-active', isAbout);
-  document.body.classList.toggle('experience-active', isExperience);
-  document.body.classList.toggle('arsenal-active', isArsenal);
-
-  document.querySelectorAll('.sidebar nav a').forEach((link) => {
-    link.classList.toggle('active', link.getAttribute('href') === `#${activeView}`);
-  });
+  Portfolio.activateView(`#${activeView}`);
 
   if (isExperience) {
     injectExperienceSection();
     updateExperienceProgress();
   }
-  if (isArsenal) injectScientificArsenalSection();
+  if (isArsenal) window.injectScientificArsenalSection?.();
 }
 
 function navigateToView(event, view) {
@@ -514,13 +337,15 @@ function onArsenalClick(event) { navigateToView(event, 'arsenal'); }
 
 function setDefaultView() {
   const hash = window.location.hash.replace('#', '');
-  const view = ['about','experience','arsenal','home'].includes(hash) ? hash : 'home';
-  if (window.location.hash !== `#${view}`) {
+  const ownViews = ['about','experience','arsenal','home'];
+  const view = Portfolio.VIEWS.some((entry) => entry.view === hash) ? hash : 'home';
+  if (!Portfolio.VIEWS.some((entry) => entry.view === hash) && window.location.hash !== '#home') {
     history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${view}`);
   }
-  setView(view);
+  if (ownViews.includes(view)) setView(view);
+  else Portfolio.activateView(`#${view}`);
   if (view === 'experience') injectExperienceSection();
-  if (view === 'arsenal') injectScientificArsenalSection();
+  if (view === 'arsenal') window.injectScientificArsenalSection?.();
   document.getElementById(view)?.scrollIntoView({ behavior: 'auto', block: 'start' });
 }
 

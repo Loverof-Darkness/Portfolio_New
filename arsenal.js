@@ -1,10 +1,4 @@
 function injectScientificArsenalSection() {
-  const existing = document.getElementById('arsenal');
-  if (existing) existing.remove();
-
-  const content = document.querySelector('.content');
-  if (!content) return;
-
   const instruments = [
     ['01', 'HPLC', 'Chromatographic Analysis'],
     ['02', 'UPLC', 'Ultra-High-Performance LC'],
@@ -20,10 +14,11 @@ function injectScientificArsenalSection() {
     ['12', 'Other Wet Chemical Techniques', 'Classical Analytical Techniques'],
   ];
 
-  const section = document.createElement('section');
-  section.id = 'arsenal';
-  section.className = 'arsenal-rebuild';
-  section.innerHTML = `
+  const section = Portfolio.renderPanel({
+    id: 'arsenal',
+    className: 'arsenal-rebuild',
+    styleId: 'arsenal-rebuild-style',
+    html: `
     <header class="arsenal-rebuild-header">
       <h2>INSTRUMENTS HANDLED</h2>
       <p class="arsenal-rebuild-intro">Hands-on analytical experience across chromatography, spectroscopy, thermal analysis, particle characterization and core wet-chemistry techniques used in pharmaceutical research &amp; development.</p>
@@ -37,18 +32,8 @@ function injectScientificArsenalSection() {
         </article>
       `).join('')}
     </div>
-  `;
-  content.appendChild(section);
-
-  const style = document.createElement('style');
-  style.id = 'arsenal-rebuild-style';
-  style.textContent = `
-    body.home-active .arsenal-rebuild,
-    body.about-active .arsenal-rebuild,
-    body.experience-active .arsenal-rebuild { display:none !important; }
-    body.arsenal-active .hero,
-    body.arsenal-active .about-panel,
-    body.arsenal-active .experience-panel { display:none !important; }
+  `,
+    css: `
 
     .arsenal-rebuild {
       min-height:100vh;
@@ -72,10 +57,7 @@ function injectScientificArsenalSection() {
       line-height:.92;
       font-weight:950;
       letter-spacing:-.05em;
-      background:linear-gradient(90deg,#fff 0%,#00e5ff 48%,#8b5cf6 100%);
-      -webkit-background-clip:text;
-      background-clip:text;
-      color:transparent;
+      ${Portfolio.gradientText('linear-gradient(90deg,#fff 0%,#00e5ff 48%,#8b5cf6 100%)')}
     }
     .arsenal-rebuild-intro {
       max-width:900px;
@@ -172,8 +154,9 @@ function injectScientificArsenalSection() {
       .arsenal-rebuild-card:nth-child(11){grid-column:2;grid-row:6}.arsenal-rebuild-card:nth-child(12){grid-column:1;grid-row:6}
       .arsenal-rebuild-card h3{font-size:16px}.arsenal-rebuild-intro{font-size:14px}
     }
-  `;
-  document.head.appendChild(style);
+  `,
+  });
+  if (!section) return;
 }
 
 window.injectScientificArsenalSection = injectScientificArsenalSection;

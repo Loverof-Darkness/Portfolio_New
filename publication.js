@@ -11,15 +11,11 @@
   };
 
   function renderPublication() {
-    const content = document.querySelector('.content');
-    if (!content) return;
-    document.getElementById('publications')?.remove();
-    document.getElementById('publication-runtime-style')?.remove();
-
-    const section = document.createElement('section');
-    section.id = 'publications';
-    section.className = 'publication-panel';
-    section.innerHTML = `
+    const section = Portfolio.renderPanel({
+      id: 'publications',
+      className: 'publication-panel',
+      styleId: 'publication-runtime-style',
+      html: `
       <div class="publication-copy">
         <div class="publication-kicker"><span>✦</span> PEER-REVIEWED PUBLICATION</div>
         <h2 class="publication-heading">PUBLICATION</h2>
@@ -52,18 +48,12 @@
         <div class="publication-platform"></div>
         <div class="publication-caption">${data.volume} · ${data.pages} · ${data.journal}</div>
       </div>
-    `;
-    content.appendChild(section);
-
-    const style = document.createElement('style');
-    style.id = 'publication-runtime-style';
-    style.textContent = `
-      body.publication-active .hero,body.publication-active .about-panel,body.publication-active .experience-panel,body.publication-active .arsenal-panel,body.publication-active .arsenal-rebuild,body.publication-active #education{display:none!important}
-      body.home-active #publications,body.about-active #publications,body.experience-active #publications,body.arsenal-active #publications,body.education-active #publications{display:none!important}
+    `,
+      css: `
       .publication-panel{min-height:100vh;height:100vh;overflow:hidden;padding:28px 0 26px;display:grid;grid-template-columns:minmax(0,1.04fr) minmax(420px,.96fr);gap:34px;align-items:center;scroll-snap-align:start;position:relative}
       .publication-copy{position:relative;z-index:3;max-width:800px}
       .publication-kicker{margin:0 0 14px;color:#9e63ff;font:800 13px ui-monospace,monospace;letter-spacing:.14em}.publication-kicker span{color:#00e5ff;margin-right:8px}
-      .publication-heading{margin:0;font-size:clamp(50px,6vw,86px);line-height:.92;font-weight:950;letter-spacing:-.055em;background:linear-gradient(90deg,#fff 0%,#00e5ff 46%,#8b5cf6 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+      .publication-heading{margin:0;font-size:clamp(50px,6vw,86px);line-height:.92;font-weight:950;letter-spacing:-.055em;${Portfolio.gradientText('linear-gradient(90deg,#fff 0%,#00e5ff 46%,#8b5cf6 100%)')}}
       .publication-tagline{margin:12px 0 28px;color:#b9c6d5;font-size:18px;font-style:italic;font-weight:600}
       .publication-meta-pill{display:inline-block;padding:8px 14px;border:1px solid rgba(0,229,255,.62);border-radius:999px;color:#00e5ff;font:800 11px ui-monospace,monospace;letter-spacing:.14em;background:rgba(0,229,255,.05)}
       .publication-title{margin:18px 0 12px;padding-left:18px;border-left:3px solid #00e5ff;color:#f5f8ff;font-size:clamp(28px,3.2vw,44px);line-height:1.08;font-weight:900;text-shadow:0 0 22px rgba(0,229,255,.06)}
@@ -78,59 +68,17 @@
       @keyframes publicationFloat{0%,100%{transform:perspective(1100px) rotateY(-13deg) rotateX(2deg) translateY(0)}50%{transform:perspective(1100px) rotateY(-10deg) rotateX(0deg) translateY(-10px)}}
       @media(max-width:900px){.publication-panel{grid-template-columns:1fr;gap:10px;overflow:auto;padding-top:20px}.publication-visual{min-height:480px}.publication-book{width:300px}.publication-platform{bottom:55px}.publication-caption{bottom:22px}.publication-heading{font-size:52px}}
       @media(max-width:600px){.publication-info-row{grid-template-columns:1fr}.publication-title{font-size:28px}.publication-summary{font-size:15px}.publication-visual{min-height:420px}.publication-book{width:260px}}
-    `;
-    content.appendChild(section);
-    document.head.appendChild(style);
-
-    document.body.classList.remove('home-active','about-active','experience-active','arsenal-active','education-active','beyond-active','connect-active');
-    document.body.classList.add('publication-active');
-    document.querySelectorAll('.sidebar nav a').forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#publications'));
+    `,
+    });
+    if (!section) return;
   }
 
   function showPublication(){
+    Portfolio.activateView('#publications');
     renderPublication();
     history.replaceState(null,'','#publications');
     document.getElementById('publications')?.scrollIntoView({behavior:'smooth',block:'start'});
   }
 
-  const bind = () => {
-    const link = document.querySelector('.sidebar nav a[href="#publications"]');
-    if (!link) return;
-    link.addEventListener('click', e => { e.preventDefault(); showPublication(); });
-    window.addEventListener('hashchange', () => { if (location.hash === '#publications') showPublication(); });
-    if (location.hash === '#publications') showPublication();
-  };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind, {once:true}); else bind();
-
-  const loadBeyond = () => {
-    if (document.querySelector('script[data-beyond-loader]')) return;
-    const script = document.createElement('script');
-    script.src = './beyond.js?v=1';
-    script.defer = true;
-    script.dataset.beyondLoader = 'true';
-    document.body.appendChild(script);
-  };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadBeyond, {once:true}); else loadBeyond();
-
-  function renderConnect(){
-    const content=document.querySelector('.content'); if(!content)return;
-    document.getElementById('connect-panel')?.remove();
-    document.getElementById('connect-runtime-style')?.remove();
-    const section=document.createElement('section');
-    section.id='connect-panel'; section.className='connect-panel';
-    section.innerHTML=`<header class="connect-header"><p class="connect-kicker">GET IN TOUCH</p><h2>CONTACT ME</h2><p>Let's connect for professional opportunities, collaboration, and scientific discussions.</p></header><div class="connect-cards"><a class="connect-card email-card" href="mailto:rgpv.abhay@gmail.com"><span class="connect-label">EMAIL</span><strong>rgpv.abhay@gmail.com</strong><small>Send me an email</small></a><a class="connect-card linkedin-card" href="https://www.linkedin.com/in/rgpvabhay1" target="_blank" rel="noopener noreferrer"><span class="connect-label">LINKEDIN</span><strong>linkedin.com/in/rgpvabhay1</strong><small>View my professional profile</small></a></div>`;
-    content.appendChild(section);
-    const style=document.createElement('style'); style.id='connect-runtime-style'; style.textContent=`body.connect-active .hero,body.connect-active .about-panel,body.connect-active .experience-panel,body.connect-active .arsenal-panel,body.connect-active .arsenal-rebuild,body.connect-active #education,body.connect-active #publications,body.connect-active #beyond{display:none!important}body.home-active #connect-panel,body.about-active #connect-panel,body.experience-active #connect-panel,body.arsenal-active #connect-panel,body.education-active #connect-panel,body.publication-active #connect-panel,body.beyond-active #connect-panel{display:none!important}.connect-panel{min-height:100vh;height:100vh;box-sizing:border-box;padding:clamp(28px,6vh,72px) 0 50px;display:flex;flex-direction:column;justify-content:center;gap:clamp(35px,6vh,70px);overflow:auto}.connect-header{max-width:950px}.connect-kicker{margin:0 0 10px;color:#00e5ff;font:800 13px ui-monospace,monospace;letter-spacing:.28em}.connect-header h2{margin:0;font-size:clamp(58px,8vw,110px);line-height:.9;font-weight:900;letter-spacing:-.055em;background:linear-gradient(90deg,#fff,#00e5ff 48%,#8b5cf6);-webkit-background-clip:text;background-clip:text;color:transparent}.connect-header p:last-child{max-width:720px;margin:20px 0 0;color:#dce8f2;font-size:clamp(17px,1.5vw,22px);line-height:1.5;font-weight:600}.connect-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;max-width:1100px;width:100%}.connect-card{min-height:210px;padding:34px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;text-decoration:none;border:1px solid rgba(0,229,255,.45);background:linear-gradient(135deg,rgba(3,20,27,.86),rgba(5,5,15,.78));box-shadow:inset 0 0 35px rgba(0,229,255,.035),0 0 25px rgba(0,0,0,.3);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:transform .32s cubic-bezier(.2,.8,.2,1),box-shadow .32s ease,border-color .32s ease;transform-origin:center}.connect-card:hover{transform:scale(1.055);border-color:#00e5ff;box-shadow:0 0 35px rgba(0,229,255,.22),inset 0 0 45px rgba(0,229,255,.07);position:relative;z-index:2}.linkedin-card{border-color:rgba(139,92,246,.5)}.linkedin-card:hover{border-color:#8b5cf6;box-shadow:0 0 35px rgba(139,92,246,.25),inset 0 0 45px rgba(139,92,246,.07)}.connect-label{color:#00e5ff;font:800 13px ui-monospace,monospace;letter-spacing:.25em;margin-bottom:18px}.linkedin-card .connect-label{color:#b99cff}.connect-card strong{color:#f8fbff;font-size:clamp(21px,2vw,30px);line-height:1.2;font-weight:800;word-break:break-word}.connect-card small{margin-top:14px;color:#9eb1c0;font-size:15px;font-weight:600}@media(max-width:760px){.connect-panel{height:auto;min-height:100vh;padding:35px 0}.connect-cards{grid-template-columns:1fr}.connect-card:hover{transform:scale(1.025)}}`; document.head.appendChild(style);
-  }
-  window.renderConnect=renderConnect;
-  const bindConnect=()=>{
-    renderConnect();
-    const link=document.querySelector('.sidebar nav a[href="#connect"]');
-    if(!link)return;
-    const show=()=>{renderConnect();document.body.classList.remove('home-active','about-active','experience-active','arsenal-active','education-active','publication-active','beyond-active');document.body.classList.add('connect-active');document.querySelectorAll('.sidebar nav a').forEach(a=>a.classList.toggle('active',a===link));document.getElementById('connect-panel')?.scrollIntoView({behavior:'smooth',block:'start'});};
-    link.addEventListener('click',e=>{e.preventDefault();show();});
-    window.addEventListener('hashchange',()=>{if(location.hash==='#connect')show();else document.body.classList.remove('connect-active');});
-    if(location.hash==='#connect')show();
-  };
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindConnect,{once:true});else bindConnect();
+  Portfolio.bindPanelRoute({ hash:'#publications', show:showPublication, hide:() => Portfolio.removePanel('publications', 'publication-runtime-style') });
 })();

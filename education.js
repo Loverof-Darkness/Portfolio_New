@@ -23,16 +23,11 @@
   ];
 
   function renderEducation() {
-    const content = document.querySelector('.content');
-    if (!content) return;
-
-    document.getElementById('education')?.remove();
-    document.getElementById('education-runtime-style')?.remove();
-
-    const section = document.createElement('section');
-    section.id = 'education';
-    section.className = 'education-panel';
-    section.innerHTML = `
+    const section = Portfolio.renderPanel({
+      id: 'education',
+      className: 'education-panel',
+      styleId: 'education-runtime-style',
+      html: `
       <header class="education-header">
         <div class="education-kicker">ACADEMIC JOURNEY</div>
         <h2>EDUCATION</h2>
@@ -81,21 +76,8 @@
         <span>2 academic milestones</span>
         <span class="footer-line"></span>
       </div>
-    `;
-    content.appendChild(section);
-
-    const style = document.createElement('style');
-    style.id = 'education-runtime-style';
-    style.textContent = `
-      body.education-active .hero,
-      body.education-active .about-panel,
-      body.education-active .experience-panel,
-      body.education-active .arsenal-panel,
-      body.education-active .arsenal-rebuild { display:none!important; }
-      body.home-active #education,
-      body.about-active #education,
-      body.experience-active #education,
-      body.arsenal-active #education { display:none!important; }
+    `,
+      css: `
 
       .education-panel {
         min-height:100vh;
@@ -121,10 +103,7 @@
         line-height:.92;
         font-weight:950;
         letter-spacing:-.055em;
-        background:linear-gradient(90deg,#fff 0%,#00e5ff 48%,#8b5cf6 100%);
-        -webkit-background-clip:text;
-        background-clip:text;
-        color:transparent;
+        ${Portfolio.gradientText('linear-gradient(90deg,#fff 0%,#00e5ff 48%,#8b5cf6 100%)')}
       }
       .education-header p{
         margin:8px 0 0;
@@ -248,8 +227,9 @@
         .education-rail,.education-orbit{display:none}
         .education-footer{padding-bottom:8px}
       }
-    `;
-    document.head.appendChild(style);
+    `,
+    });
+    if (!section) return;
 
     const cards = [...section.querySelectorAll('.education-card')];
     cards.forEach((card) => {
@@ -269,36 +249,15 @@
   }
 
   function showEducation() {
-    document.body.classList.remove('home-active','about-active','experience-active','arsenal-active');
-    document.body.classList.add('education-active');
-    document.querySelectorAll('.sidebar nav a').forEach((link) => {
-      link.classList.toggle('active', link.getAttribute('href') === '#education');
-    });
+    Portfolio.activateView('#education');
     renderEducation();
     history.replaceState(null, '', '#education');
     document.getElementById('education')?.scrollIntoView({behavior:'smooth',block:'start'});
   }
 
   function hideEducation() {
-    document.body.classList.remove('education-active');
-    document.getElementById('education')?.remove();
-    document.getElementById('education-runtime-style')?.remove();
+    Portfolio.removePanel('education', 'education-runtime-style');
   }
 
-  function bind() {
-    const link = document.querySelector('.sidebar nav a[href="#education"]');
-    if (!link) return;
-    link.addEventListener('click', (event) => {
-      event.preventDefault();
-      showEducation();
-    });
-    window.addEventListener('hashchange', () => {
-      if (window.location.hash === '#education') showEducation();
-      else hideEducation();
-    });
-    if (window.location.hash === '#education') showEducation();
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind, {once:true});
-  else bind();
+  Portfolio.bindPanelRoute({ hash:'#education', show:showEducation, hide:hideEducation });
 })();
