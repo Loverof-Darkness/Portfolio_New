@@ -11,7 +11,7 @@
   };
 
   function renderPublication() {
-    const section = Portfolio.renderPanel({
+    Portfolio.renderPanel({
       id: 'publications',
       className: 'publication-panel',
       styleId: 'publication-runtime-style',
@@ -70,7 +70,6 @@
       @media(max-width:600px){.publication-info-row{grid-template-columns:1fr}.publication-title{font-size:28px}.publication-summary{font-size:15px}.publication-visual{min-height:420px}.publication-book{width:260px}}
     `,
     });
-    if (!section) return;
   }
 
   function showPublication(){

@@ -14,7 +14,7 @@ function injectScientificArsenalSection() {
     ['12', 'Other Wet Chemical Techniques', 'Classical Analytical Techniques'],
   ];
 
-  const section = Portfolio.renderPanel({
+  Portfolio.renderPanel({
     id: 'arsenal',
     className: 'arsenal-rebuild',
     styleId: 'arsenal-rebuild-style',

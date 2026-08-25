@@ -1,6 +1,6 @@
 (() => {
   function renderConnect(){
-    const section=Portfolio.renderPanel({
+    Portfolio.renderPanel({
       id:'connect-panel',
       className:'connect-panel',
       styleId:'connect-runtime-style',
