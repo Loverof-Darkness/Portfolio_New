@@ -2,31 +2,46 @@
   const PREFIX = '[portfolio]';
   const warnedOnce = new Set();
 
-  // Warm the exact dynamic resources during the head phase. This overlaps
-  // network work with HTML parsing instead of waiting for shared.js to inject
-  // the scripts after the document has been parsed.
+  // In dynamic mode, the legacy molecule renderer is unnecessary because
+  // GalaxyJS owns the background. Prevent its animation loop from consuming
+  // CPU/GPU time while preserving the original molecule background on a
+  // genuinely fresh/original tab load.
   (() => {
     try {
       const started = Number.parseInt(sessionStorage.getItem('portfolio:tab-started-at') || '0', 10);
-      const freshTab = !started;
-      const expired = started && (Date.now() - started) >= 5 * 60 * 1000;
-      if (!freshTab && !expired) {
-        [
-          ['./theme.js?v=14', 'script'],
-          ['./font-curator.js?v=6', 'script'],
-          ['./vendor/galaxy.min.js?v=3.4.0', 'script'],
-        ].forEach(([href, as]) => {
-          if (document.querySelector(`link[rel="preload"][href="${href}"]`)) return;
-          const link = document.createElement('link');
-          link.rel = 'preload';
-          link.as = as;
-          link.href = href;
-          link.fetchPriority = 'high';
-          document.head.appendChild(link);
-        });
-      }
+      const dynamicMode = Boolean(started) && (Date.now() - started) < (5 * 60 * 1000);
+      window.__PORTFOLIO_DYNAMIC_MODE = dynamicMode;
+
+      if (!dynamicMode) return;
+
+      const nativeGetContext = HTMLCanvasElement.prototype.getContext;
+      HTMLCanvasElement.prototype.getContext = function guardedGetContext(...args) {
+        if (this && this.id === 'molecule-bg') return null;
+        return nativeGetContext.apply(this, args);
+      };
+
+      const nativeRequestAnimationFrame = window.requestAnimationFrame.bind(window);
+      window.requestAnimationFrame = function guardedRequestAnimationFrame(callback) {
+        if (typeof callback === 'function') {
+          let source = '';
+          try { source = Function.prototype.toString.call(callback); } catch (_) {}
+          if (source.includes('drawBackground()') && source.includes('drawBonds()')) {
+            return 0;
+          }
+        }
+        return nativeRequestAnimationFrame(callback);
+      };
+
+      const style = document.createElement('style');
+      style.id = 'legacy-background-performance-guard';
+      style.textContent = '#molecule-bg{display:none!important;visibility:hidden!important;pointer-events:none!important}';
+      document.head.appendChild(style);
+
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('molecule-bg')?.remove();
+      }, { once: true });
     } catch (_) {
-      // Performance hints are optional; never let them affect page startup.
+      // Performance protection is optional; never block normal site startup.
     }
   })();
 
@@ -65,7 +80,7 @@
       script.defer = defer;
       Object.entries(dataset).forEach(([key, value]) => { script.dataset[key] = value; });
       script.addEventListener('load', () => resolve(script), { once: true });
-      script.addEventListener('error', () => reject(new Error(`Failed to load script \"${src}\"`)), { once: true });
+      script.addEventListener('error', () => reject(new Error(`Failed to load script "${src}"`)), { once: true });
       document.body.appendChild(script);
     });
   }
