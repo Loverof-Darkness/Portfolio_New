@@ -4,7 +4,7 @@
 
   // Load the randomized theme engine before the other dynamically rendered views.
   const themeScript = document.createElement('script');
-  themeScript.src = './theme.js?v=1';
+  themeScript.src = './theme.js?v=2';
   themeScript.async = false;
   document.head.appendChild(themeScript);
 
