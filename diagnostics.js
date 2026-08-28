@@ -36,6 +36,18 @@
     return guard(scope, fn)();
   }
 
+  loadStylesheet('./professional-polish.css?v=2', 'professional-polish');
+  loadStylesheet('./mobile-responsive.css?v=1', 'mobile-responsive');
+
+  function loadStylesheet(href, id) {
+    if (document.getElementById(id)) return;
+    const link = document.createElement('link');
+    link.id = id;
+    link.rel = 'stylesheet';
+    link.href = href;
+    document.head.appendChild(link);
+  }
+
   window.addEventListener('error', (event) => {
     const target = event.target;
     if (target && target !== window && target.tagName) {
