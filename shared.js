@@ -2,15 +2,21 @@
   const diagnostics = window.portfolioDiagnostics;
   const guard = (scope, fn) => (diagnostics ? diagnostics.guard(scope, fn) : fn);
 
+  // Load the randomized theme engine before the other dynamically rendered views.
+  const themeScript = document.createElement('script');
+  themeScript.src = './theme.js?v=1';
+  themeScript.async = false;
+  document.head.appendChild(themeScript);
+
   const VIEWS = [
-    { view:'home',         hash:'#home',         bodyClass:'home-active',        selector:'.hero' },
-    { view:'about',        hash:'#about',        bodyClass:'about-active',       selector:'.about-panel' },
-    { view:'experience',   hash:'#experience',   bodyClass:'experience-active',  selector:'.experience-panel' },
-    { view:'arsenal',      hash:'#arsenal',      bodyClass:'arsenal-active',     selector:'.arsenal-rebuild' },
-    { view:'education',    hash:'#education',    bodyClass:'education-active',   selector:'#education' },
-    { view:'publications', hash:'#publications', bodyClass:'publication-active', selector:'#publications' },
-    { view:'beyond',       hash:'#beyond',       bodyClass:'beyond-active',      selector:'#beyond' },
-    { view:'connect',      hash:'#connect',      bodyClass:'connect-active',     selector:'#connect-panel' },
+    { view:'home',         hash:'#home',        bodyClass:'home-active',        selector:'.hero' },
+    { view:'about',        hash:'#about',       bodyClass:'about-active',       selector:'.about-panel' },
+    { view:'experience',   hash:'#experience',  bodyClass:'experience-active',  selector:'.experience-panel' },
+    { view:'arsenal',      hash:'#arsenal',     bodyClass:'arsenal-active',     selector:'.arsenal-rebuild' },
+    { view:'education',    hash:'#education',   bodyClass:'education-active',   selector:'#education' },
+    { view:'publications', hash:'#publications',bodyClass:'publication-active', selector:'#publications' },
+    { view:'beyond',       hash:'#beyond',      bodyClass:'beyond-active',      selector:'#beyond' },
+    { view:'connect',      hash:'#connect',     bodyClass:'connect-active',     selector:'#connect-panel' },
   ];
 
   function onReady(fn) {
