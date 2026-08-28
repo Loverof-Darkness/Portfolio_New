@@ -2,32 +2,45 @@
   const diagnostics = window.portfolioDiagnostics;
   const guard = (scope, fn) => (diagnostics ? diagnostics.guard(scope, fn) : fn);
 
-  // First-ever load stays completely untouched: no dynamic theme, font, or
-  // procedural background script is loaded at all. Starting with the second
-  // load/reload, the dynamic engines are enabled and randomized independently.
-  const loadKey = 'portfolio:dynamic-started';
-  const firstLoad = localStorage.getItem(loadKey) !== '1';
+  // First visit in a tab is always the original design. A brand-new tab also
+  // starts original. After five minutes without a visit, that tab is treated
+  // as new again. Otherwise reloads use the randomized engines.
+  const sessionKey = 'portfolio:tab-visit-start';
+  const dynamicKey = 'portfolio:dynamic-started';
+  const FIVE_MINUTES = 5 * 60 * 1000;
+  const now = Date.now();
+  const previousStart = Number.parseInt(sessionStorage.getItem(sessionKey) || '0', 10);
+  const staleTab = !previousStart || (now - previousStart) >= FIVE_MINUTES;
+  const firstLoad = staleTab || sessionStorage.getItem(dynamicKey) !== '1';
 
   if (firstLoad) {
-    localStorage.setItem(loadKey, '1');
-  } else {
+    sessionStorage.setItem(sessionKey, String(now));
+    sessionStorage.removeItem(dynamicKey);
+  }
+
+  // Do not load dynamic engines on the first/new/stale visit. This guarantees
+  // the original design is the only design shown for that opening.
+  if (!firstLoad) {
     const themeScript = document.createElement('script');
-    themeScript.src = './theme.js?v=5';
+    themeScript.src = './theme.js?v=6';
     themeScript.async = false;
     document.head.appendChild(themeScript);
 
     const backgroundScript = document.createElement('script');
-    backgroundScript.src = './background.js?v=3';
+    backgroundScript.src = './background.js?v=4';
     backgroundScript.async = false;
     document.head.appendChild(backgroundScript);
   }
+
+  // The current original visit is now complete; its next reload becomes dynamic.
+  if (firstLoad) sessionStorage.setItem(dynamicKey, '1');
 
   const VIEWS = [
     { view:'home',         hash:'#home',        bodyClass:'home-active',        selector:'.hero' },
     { view:'about',        hash:'#about',       bodyClass:'about-active',       selector:'.about-panel' },
     { view:'experience',   hash:'#experience',  bodyClass:'experience-active',  selector:'.experience-panel' },
     { view:'arsenal',      hash:'#arsenal',     bodyClass:'arsenal-active',     selector:'.arsenal-rebuild' },
-    { view:'education',    hash:'#education',  bodyClass:'education-active',  selector:'#education' },
+    { view:'education',    hash:'#education',   bodyClass:'education-active',  selector:'#education' },
     { view:'publications', hash:'#publications',bodyClass:'publication-active', selector:'#publications' },
     { view:'beyond',       hash:'#beyond',      bodyClass:'beyond-active',      selector:'#beyond' },
     { view:'connect',      hash:'#connect',     bodyClass:'connect-active',    selector:'#connect-panel' },
@@ -98,10 +111,7 @@
       : '#home';
     activateView(hash);
   };
-  window.addEventListener(
-    'hashchange',
-    guard('view hashchange', onHashChange),
-  );
+  window.addEventListener('hashchange', guard('view hashchange', onHashChange));
 
   function bindPanelRoute({ hash, show, hide, scope = hash }) {
     onReady(() => {
