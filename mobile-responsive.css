@@ -1,0 +1,737 @@
+/* Mobile-first runtime overrides.
+   Keeps desktop artwork intact while removing fixed desktop assumptions on phones/tablets. */
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --mobile-gutter: clamp(14px, 4.5vw, 22px);
+    --mobile-nav-height: 64px;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--mobile-nav-height) + 10px);
+  }
+
+  body {
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    font-size: 15px;
+  }
+
+  #galaxy-dynamic-bg,
+  #molecule-bg,
+  .bg-vignette {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-width: 100vw !important;
+    pointer-events: none !important;
+  }
+
+  .content {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 var(--mobile-gutter) calc(28px + env(safe-area-inset-bottom)) !important;
+    box-sizing: border-box !important;
+  }
+
+  .sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 100 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    height: auto !important;
+    padding: max(8px, env(safe-area-inset-top)) var(--mobile-gutter) 8px !important;
+    margin: 0 !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--theme-border-soft, rgba(255,255,255,.15)) !important;
+    background: color-mix(in srgb, var(--theme-surface, #081019) 92%, transparent) !important;
+    box-shadow: 0 10px 28px rgba(0,0,0,.22) !important;
+    backdrop-filter: blur(18px) saturate(125%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(125%) !important;
+  }
+
+  .brand {
+    width: 100% !important;
+    height: 48px !important;
+    padding: 0 2px !important;
+    margin: 0 0 7px !important;
+    gap: 9px !important;
+    border-bottom: 0 !important;
+  }
+
+  .brand-mark {
+    font-size: clamp(30px, 9vw, 40px) !important;
+    line-height: 1 !important;
+  }
+
+  .brand span:last-child {
+    font-size: 8px !important;
+    line-height: 1.15 !important;
+    letter-spacing: .1em !important;
+  }
+
+  .sidebar nav {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 7px !important;
+    padding: 0 0 3px !important;
+    margin: 0 !important;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: x proximity;
+  }
+
+  .sidebar nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar nav a {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: max-content !important;
+    min-height: 42px !important;
+    height: 42px !important;
+    grid-template-columns: 20px auto !important;
+    gap: 7px !important;
+    padding: 7px 11px !important;
+    border-radius: 10px !important;
+    font-size: 10px !important;
+    letter-spacing: .035em !important;
+    white-space: nowrap !important;
+    scroll-snap-align: start;
+  }
+
+  .sidebar nav a svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .sidebar .cv-button,
+  .sidebar .socials,
+  .sidebar footer {
+    display: none !important;
+  }
+
+  .hero,
+  .about-panel,
+  .experience-panel,
+  .arsenal-rebuild,
+  .education-panel,
+  .publication-panel,
+  .beyond-panel,
+  .connect-panel,
+  body #connect-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    scroll-snap-align: none !important;
+    scroll-snap-stop: normal !important;
+  }
+
+  .hero {
+    min-height: calc(100dvh - var(--mobile-nav-height)) !important;
+    height: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: clamp(28px, 7vh, 62px) 0 clamp(34px, 8vh, 70px) !important;
+  }
+
+  .hero-copy {
+    width: 100% !important;
+    max-width: 760px !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+  }
+
+  .hero-copy::before {
+    margin-bottom: 14px !important;
+    font-size: clamp(8px, 2.4vw, 10px) !important;
+    letter-spacing: .14em !important;
+    line-height: 1.45 !important;
+  }
+
+  h1 {
+    font-size: clamp(56px, 18vw, 92px) !important;
+    line-height: .84 !important;
+    letter-spacing: -.06em !important;
+    margin-bottom: 18px !important;
+    overflow-wrap: anywhere;
+  }
+
+  .role {
+    margin-bottom: 18px !important;
+    font-size: clamp(15px, 5vw, 24px) !important;
+    line-height: 1.1 !important;
+    letter-spacing: .1em !important;
+  }
+
+  .intro-heading {
+    min-height: 25px !important;
+    font-size: clamp(19px, 5.6vw, 25px) !important;
+    line-height: 1.25 !important;
+  }
+
+  .summary {
+    max-width: 100% !important;
+    font-size: clamp(15px, 4.2vw, 18px) !important;
+    line-height: 1.52 !important;
+    overflow-wrap: anywhere;
+  }
+
+  .summary .typing-line {
+    min-height: 1.52em !important;
+  }
+
+  .about-panel,
+  .experience-panel,
+  .arsenal-rebuild,
+  .education-panel,
+  .publication-panel,
+  .beyond-panel {
+    min-height: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: clamp(32px, 7vw, 52px) 0 34px !important;
+  }
+
+  .about-heading,
+  .experience-heading,
+  .arsenal-rebuild-header h2,
+  .education-header h2,
+  .publication-heading,
+  .beyond-header h2,
+  .connect-header h2 {
+    font-size: clamp(40px, 12.5vw, 62px) !important;
+    line-height: .94 !important;
+    letter-spacing: -.045em !important;
+    overflow-wrap: anywhere;
+  }
+
+  body.about-active .about-heading,
+  body.about-active .about-profile-title,
+  body.about-active .metrics strong,
+  body.about-active .metrics small,
+  body.about-active .overview h2,
+  body.about-active .expertise .section-label,
+  body.about-active .skill,
+  body.about-active .lab-screen {
+    font-size: revert !important;
+  }
+
+  body.about-active .about-heading {
+    font-size: clamp(40px, 12.5vw, 62px) !important;
+  }
+
+  body.about-active .about-profile-title {
+    font-size: clamp(21px, 6.2vw, 31px) !important;
+    line-height: 1.2 !important;
+  }
+
+  body.about-active .metrics strong {
+    font-size: clamp(30px, 9vw, 42px) !important;
+  }
+
+  body.about-active .metrics small {
+    font-size: 9px !important;
+  }
+
+  body.about-active .overview h2 {
+    font-size: clamp(26px, 7.4vw, 38px) !important;
+  }
+
+  .about-profile-card,
+  .experience-card,
+  .arsenal-rebuild-card,
+  .education-card,
+  .beyond-item,
+  .overview,
+  .metrics,
+  .publication-info-row > div,
+  .instrument-visual,
+  .connect-icon,
+  .contact-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .about-profile-card {
+    padding: 20px !important;
+  }
+
+  .metrics {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .metrics article {
+    min-width: 0 !important;
+    min-height: 84px !important;
+    padding: 13px 12px !important;
+    grid-template-columns: 29px 1fr !important;
+  }
+
+  .metrics span {
+    font-size: 21px !important;
+  }
+
+  .metrics strong {
+    font-size: 28px !important;
+  }
+
+  .metrics small {
+    font-size: 8px !important;
+  }
+
+  .overview {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    padding: 12px !important;
+  }
+
+  .about-panel .overview > div:first-child,
+  .about-panel .overview > div:nth-child(2),
+  .about-panel .overview .expertise {
+    grid-column: 1 !important;
+  }
+
+  .about-panel .overview > div:nth-child(2) {
+    padding: 8px 4px !important;
+  }
+
+  .instrument-visual {
+    min-height: 205px !important;
+  }
+
+  .instrument-unit {
+    width: 74% !important;
+    height: 68% !important;
+  }
+
+  .expertise {
+    padding: 12px 2px 0 !important;
+    border-left: 0 !important;
+    border-top: 1px solid color-mix(in srgb, var(--theme-primary) 12%, transparent) !important;
+  }
+
+  .skill {
+    font-size: 12px !important;
+    margin: 15px 0 !important;
+  }
+
+  .experience-header-wrap,
+  .arsenal-rebuild-header,
+  .publication-copy,
+  .beyond-header,
+  .connect-header {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .experience-subtitle,
+  .arsenal-rebuild-intro,
+  .education-header p,
+  .publication-tagline,
+  .beyond-intro,
+  .connect-header p:last-child {
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+  }
+
+  .career-track {
+    height: 78px !important;
+    margin-inline: 2px !important;
+  }
+
+  .career-track-line,
+  .career-track-progress {
+    top: 25px !important;
+  }
+
+  .career-start strong,
+  .career-transition strong,
+  .career-now strong {
+    font-size: 10px !important;
+  }
+
+  .career-start small,
+  .career-transition small,
+  .career-now small {
+    max-width: 90px !important;
+    text-align: center !important;
+    font-size: 8px !important;
+    line-height: 1.25 !important;
+  }
+
+  .experience-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .experience-card {
+    padding: 20px !important;
+    clip-path: none !important;
+  }
+
+  .experience-card h3 {
+    font-size: clamp(24px, 8vw, 34px) !important;
+    line-height: 1.05 !important;
+  }
+
+  .experience-card li {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+
+  .arsenal-rebuild-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: none !important;
+    gap: 10px !important;
+  }
+
+  .arsenal-rebuild-card,
+  .arsenal-rebuild-card:nth-child(n) {
+    grid-column: auto !important;
+    grid-row: auto !important;
+    min-height: 104px !important;
+    padding: 15px !important;
+    clip-path: none !important;
+  }
+
+  .arsenal-rebuild-card h3 {
+    font-size: clamp(16px, 4.5vw, 21px) !important;
+    line-height: 1.1 !important;
+  }
+
+  .arsenal-rebuild-card p {
+    font-size: 8px !important;
+    line-height: 1.35 !important;
+  }
+
+  .education-stage {
+    display: block !important;
+    padding: 8px 0 !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .education-stack {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .education-card {
+    min-height: 0 !important;
+    padding: 20px !important;
+    transform: none !important;
+    opacity: 1 !important;
+    animation: none !important;
+    cursor: default !important;
+  }
+
+  .education-card-main {
+    padding: 18px 2px !important;
+  }
+
+  .education-degree {
+    font-size: clamp(23px, 7vw, 31px) !important;
+  }
+
+  .education-institution {
+    font-size: 14px !important;
+    line-height: 1.45 !important;
+  }
+
+  .education-detail,
+  .education-card.is-active .education-detail,
+  .education-card:hover .education-detail,
+  .education-card:focus-visible .education-detail {
+    max-height: none !important;
+    opacity: 1 !important;
+    margin-top: 10px !important;
+  }
+
+  .education-orbit,
+  .education-rail {
+    display: none !important;
+  }
+
+  .education-footer {
+    padding-top: 7px !important;
+  }
+
+  .publication-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+
+  .publication-info-row {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .publication-title {
+    font-size: clamp(25px, 7vw, 34px) !important;
+    line-height: 1.12 !important;
+    padding-left: 13px !important;
+  }
+
+  .publication-summary {
+    font-size: 14px !important;
+    line-height: 1.52 !important;
+  }
+
+  .publication-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+  }
+
+  .publication-button {
+    width: 100% !important;
+    min-height: 46px !important;
+  }
+
+  .publication-visual {
+    width: 100% !important;
+    min-height: 390px !important;
+  }
+
+  .publication-book {
+    width: min(260px, 66vw) !important;
+  }
+
+  .publication-platform {
+    bottom: 44px !important;
+    width: 82vw !important;
+    max-width: 380px !important;
+  }
+
+  .beyond-list {
+    gap: 12px !important;
+  }
+
+  .beyond-item {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    min-height: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .beyond-copy {
+    padding: 21px 19px 17px !important;
+  }
+
+  .beyond-copy h3 {
+    font-size: clamp(24px, 7.5vw, 34px) !important;
+  }
+
+  .beyond-copy p {
+    font-size: 14px !important;
+  }
+
+  .beyond-image-wrap,
+  .beyond-image-wrap img {
+    min-height: 190px !important;
+    height: 48vw !important;
+    max-height: 300px !important;
+  }
+
+  .beyond-image-wrap img {
+    border-radius: 0 0 var(--theme-panel-radius, 14px) var(--theme-panel-radius, 14px) !important;
+  }
+
+  body #connect-panel {
+    position: relative !important;
+    inset: auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    min-height: calc(100dvh - var(--mobile-nav-height)) !important;
+    height: auto !important;
+    max-width: 100% !important;
+    padding: clamp(34px, 9vw, 60px) 0 34px !important;
+    margin: 0 !important;
+    gap: 28px !important;
+    overflow: visible !important;
+    z-index: auto !important;
+  }
+
+  body #connect-panel .connect-header {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  body #connect-panel .connect-header h2 {
+    font-size: clamp(48px, 14vw, 74px) !important;
+  }
+
+  body #connect-panel .connect-header p:last-child {
+    max-width: 100% !important;
+    font-size: 15px !important;
+  }
+
+  body #connect-panel .connect-icons {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  body #connect-panel .connect-icon {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Avoid expensive blur layers on small screens. */
+  .about-profile-card,
+  .overview,
+  .experience-card,
+  .arsenal-rebuild-card,
+  .education-card,
+  .beyond-item,
+  .connect-icon,
+  .publication-info-row > div {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+
+  /* Stop hover-only desktop transforms on touch devices. */
+  @media (hover: none) {
+    .sidebar nav a:hover,
+    .experience-card:hover,
+    .arsenal-rebuild-card:hover,
+    .education-card:hover,
+    .beyond-item:hover,
+    .connect-icon:hover,
+    .publication-button:hover {
+      transform: none !important;
+    }
+  }
+}
+
+@media (max-width: 420px) {
+  .sidebar nav a {
+    min-height: 40px !important;
+    height: 40px !important;
+    padding: 6px 9px !important;
+    font-size: 9px !important;
+  }
+
+  .metrics {
+    grid-template-columns: 1fr !important;
+  }
+
+  .metrics article {
+    min-height: 76px !important;
+  }
+
+  .arsenal-rebuild-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .experience-card-top {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  body #connect-panel .connect-icons {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 360px) {
+  :root {
+    --mobile-gutter: 12px;
+  }
+
+  h1 {
+    font-size: 52px !important;
+  }
+
+  .about-heading,
+  .experience-heading,
+  .arsenal-rebuild-header h2,
+  .education-header h2,
+  .publication-heading,
+  .beyond-header h2 {
+    font-size: 36px !important;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 560px) and (max-width: 900px) {
+  .sidebar .brand {
+    height: 40px !important;
+  }
+
+  .hero {
+    min-height: calc(100dvh - 70px) !important;
+    padding-block: 24px !important;
+  }
+
+  .hero h1 {
+    font-size: clamp(48px, 11vw, 72px) !important;
+  }
+
+  .about-panel,
+  .experience-panel,
+  .arsenal-rebuild,
+  .education-panel,
+  .publication-panel,
+  .beyond-panel {
+    padding-block: 28px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar nav,
+  .education-card,
+  .beyond-item,
+  .publication-book,
+  .career-dot,
+  .typing-caret {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
