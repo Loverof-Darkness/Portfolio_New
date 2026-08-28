@@ -22,19 +22,18 @@
   // Dynamic engines are loaded only after the first/original visit.
   if (!originalLoad) {
     const themeScript = document.createElement('script');
-    themeScript.src = './theme.js?v=9';
+    themeScript.src = './theme.js?v=10';
     themeScript.async = false;
     document.head.appendChild(themeScript);
 
-    // Apply the curated typography after the theme engine finishes. This
-    // replaces the visually redundant legacy font profiles with distinct ones.
+    // Curated typography loads after theme.js so it is the final dynamic font layer.
     const fontScript = document.createElement('script');
-    fontScript.src = './font-curator.js?v=1';
+    fontScript.src = './font-curator.js?v=2';
     fontScript.async = false;
     document.head.appendChild(fontScript);
 
     const backgroundScript = document.createElement('script');
-    backgroundScript.src = './background.js?v=7';
+    backgroundScript.src = './background.js?v=8';
     backgroundScript.async = false;
     document.head.appendChild(backgroundScript);
   }
