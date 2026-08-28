@@ -2,6 +2,34 @@
   const PREFIX = '[portfolio]';
   const warnedOnce = new Set();
 
+  // Warm the exact dynamic resources during the head phase. This overlaps
+  // network work with HTML parsing instead of waiting for shared.js to inject
+  // the scripts after the document has been parsed.
+  (() => {
+    try {
+      const started = Number.parseInt(sessionStorage.getItem('portfolio:tab-started-at') || '0', 10);
+      const freshTab = !started;
+      const expired = started && (Date.now() - started) >= 5 * 60 * 1000;
+      if (!freshTab && !expired) {
+        [
+          ['./theme.js?v=14', 'script'],
+          ['./font-curator.js?v=6', 'script'],
+          ['./vendor/galaxy.min.js?v=3.4.0', 'script'],
+        ].forEach(([href, as]) => {
+          if (document.querySelector(`link[rel="preload"][href="${href}"]`)) return;
+          const link = document.createElement('link');
+          link.rel = 'preload';
+          link.as = as;
+          link.href = href;
+          link.fetchPriority = 'high';
+          document.head.appendChild(link);
+        });
+      }
+    } catch (_) {
+      // Performance hints are optional; never let them affect page startup.
+    }
+  })();
+
   function toError(value, fallbackMessage) {
     if (value instanceof Error) return value;
     if (typeof value === 'string') return new Error(value);
