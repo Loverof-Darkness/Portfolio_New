@@ -16,13 +16,18 @@
     { name:'Deep Space Dust', draw:'dust' },
   ];
 
-  const storageKey = 'portfolio:last-background-index';
-  const previous = Number.parseInt(localStorage.getItem(storageKey) || '-1', 10);
-  let modeIndex = Math.floor(Math.random() * modes.length);
-  if (modes.length > 1 && modeIndex === previous) {
-    modeIndex = (modeIndex + 1 + Math.floor(Math.random() * (modes.length - 1))) % modes.length;
+  // Shuffle-bag selection: every background appears once before any
+  // background is eligible again. This is stronger than only blocking the
+  // immediately previous background.
+  const storageKey = 'portfolio:background-bag-v2';
+  let bag=[];
+  try { bag=JSON.parse(localStorage.getItem(storageKey)||'[]'); } catch { bag=[]; }
+  if(!Array.isArray(bag) || bag.length===0 || bag.some(i=>i<0||i>=modes.length)) {
+    bag=Array.from({length:modes.length},(_,i)=>i);
+    for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];}
   }
-  localStorage.setItem(storageKey, String(modeIndex));
+  const modeIndex=bag.shift();
+  localStorage.setItem(storageKey,JSON.stringify(bag));
 
   function boot() {
     const old = document.getElementById('dynamic-bg');
@@ -98,21 +103,16 @@
     function plasma(now){const c=palette();for(let l=0;l<10;l++){ctx.beginPath();const yy=height*(.22+.06*l);for(let x=0;x<=width;x+=12){const y=yy+Math.sin(x*.008+now*.0011+l)*24+Math.sin(x*.0024-now*.0007+l*1.3)*18;if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.strokeStyle=rgba([c.p,c.s,c.a][l%3],.1);ctx.lineWidth=1.3;ctx.stroke();}}
     function dna(now){const c=palette(),cx=width*.7,amp=Math.min(width*.11,150),top=-30,bottom=height+30;for(let strand=0;strand<2;strand++){ctx.beginPath();for(let y=top;y<=bottom;y+=8){const phase=y*.045+now*.0014,x=cx+(strand?Math.sin(phase+Math.PI):Math.sin(phase))*amp;if(y===top)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.strokeStyle=rgba(strand?c.s:c.p,.34);ctx.lineWidth=1.4;ctx.stroke();}for(let y=top+10;y<bottom;y+=22){const phase=y*.045+now*.0014,x1=cx+Math.sin(phase)*amp,x2=cx+Math.sin(phase+Math.PI)*amp;ctx.beginPath();ctx.moveTo(x1,y);ctx.lineTo(x2,y);ctx.strokeStyle=rgba(c.a,.14);ctx.lineWidth=1;ctx.stroke();}}
     function meteor(now,dt){const c=palette();for(let i=0;i<meteors.length;i++){const m=meteors[i];if(!prefersReduced()){m.x+=m.vx*dt/1000;m.y+=m.vy*dt/1000;}m.life+=dt/1000;if(m.x>width+120||m.y>height+120||m.life>4.5)meteors[i]=spawnMeteor(false);const mag=Math.hypot(m.vx,m.vy),nx=m.vx/mag,ny=m.vy/mag,tx=m.x-nx*m.len,ty=m.y-ny*m.len;const grad=ctx.createLinearGradient(tx,ty,m.x,m.y);grad.addColorStop(0,rgba(c.s,0));grad.addColorStop(.55,rgba(c.p,.16));grad.addColorStop(1,rgba(c.text,.85));ctx.strokeStyle=grad;ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(m.x,m.y);ctx.stroke();}starField(now,false);}
-    function dustMode(now,dt){const c=palette();for(const p of dust){if(!prefersReduced()){p.x+=p.vx*dt;p.y+=p.vy*dt;}if(p.x<-10)p.x=width+10;if(p.x>width+10)p.x=-10;if(p.y<-10)p.y=height+10;if(p.y>height+10)p.y=-10;const pulse=.5+.5*Math.sin(now*.001+p.x*.01);ctx.beginPath();ctx.fillStyle=rgba(pulse>.7?c.a:c.p,p.a*(.6+pulse*.6));ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();}}
+    function dustMode(now,dt){const c=palette();for(const p of dust){if(!prefersReduced()){p.x+=p.vx*dt;p.y+=p.vy*dt;}if(p.x<-10)p.x=width+10;if(p.x>width+10)p.x=-10;if(p.y<-10)p.y=height+10;if(p.y>height+10)p.y=-10;const pulse=.5+.5*Math.sin(now*.001+p.x*.01);ctx.beginPath();ctx.fillStyle=rgba(pulse>.7?c.a:c.p,p.a*(.6+pulse*.6));ctx.arc(p.x,p.y,p.r*(.65+pulse*.5),0,Math.PI*2);ctx.fill();}}
 
-    function frame(now){
-      const dt=Math.min(now-last,32);last=now;t+=dt;clear();
-      const mode=modes[modeIndex].draw;
-      if(mode==='universe')universe(now);else if(mode==='nebula')nebula(now);else if(mode==='aurora')aurora(now);else if(mode==='solar')solar(now);else if(mode==='warp')warp(now);else if(mode==='grid')grid(now);else if(mode==='constellation')constellation(now);else if(mode==='matrix')matrix(now,dt);else if(mode==='plasma')plasma(now);else if(mode==='dna')dna(now);else if(mode==='meteor')meteor(now,dt);else dustMode(now,dt);
-      if(prefersReduced()){if(raf)cancelAnimationFrame(raf);raf=0;return;}raf=requestAnimationFrame(frame);
-    }
-
-    resize();
+    const drawFns=[universe,nebula,aurora,solar,warp,grid,constellation,matrix,plasma,dna,meteor,dustMode];
+    function frame(now){const dt=Math.min(50,now-last);last=now;t=now;clear();const fn=drawFns[modeIndex];if(fn===matrix||fn===meteor||fn===dustMode)fn(now,dt);else fn(now);if(!prefersReduced())raf=requestAnimationFrame(frame);}
     window.addEventListener('resize',resize,{passive:true});
-    reducedMotion.addEventListener?.('change',()=>{if(reducedMotion.matches&&raf){cancelAnimationFrame(raf);raf=0;}else if(!reducedMotion.matches&&!raf){last=performance.now();raf=requestAnimationFrame(frame);}});
-    window.portfolioBackground=Object.freeze({index:modeIndex,name:modes[modeIndex].name,type:modes[modeIndex].draw});
-    if(prefersReduced())frame(performance.now());else raf=requestAnimationFrame(frame);
+    resize();
+    frame(performance.now());
+    window.portfolioBackground=modes[modeIndex];
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
+  else boot();
 })();
