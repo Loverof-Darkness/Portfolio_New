@@ -6,8 +6,26 @@
   const fiveMinutes = 5 * 60 * 1000;
   const previousStart = Number.parseInt(sessionStorage.getItem(startedKey) || '0', 10);
   const originalMode = !previousStart || now - previousStart >= fiveMinutes;
+  const dynamicMode = !originalMode;
 
+  window.__PORTFOLIO_DYNAMIC_MODE = dynamicMode;
   if (originalMode) sessionStorage.setItem(startedKey, String(now));
+
+  // In dynamic mode script.js still contains the legacy molecule renderer.
+  // Its canvas is removed, but its animation callback would otherwise keep
+  // scheduling empty frames forever. Block only callbacks belonging to that
+  // legacy renderer; GalaxyJS animation callbacks remain untouched.
+  if (dynamicMode) {
+    const nativeRequestAnimationFrame = window.requestAnimationFrame.bind(window);
+    window.requestAnimationFrame = (callback) => {
+      if (typeof callback === 'function') {
+        let source = '';
+        try { source = Function.prototype.toString.call(callback); } catch (_) {}
+        if (source.includes('drawBackground()') && source.includes('drawBonds()') && source.includes('drawAtoms(')) return 0;
+      }
+      return nativeRequestAnimationFrame(callback);
+    };
+  }
 
   const loadScript = (src) => new Promise((resolve, reject) => {
     const script = document.createElement('script');
@@ -31,8 +49,6 @@
     document.head.appendChild(link);
   });
 
-  // Load responsive layers once for every device class, including the original
-  // first-open experience. This keeps mobile and short-desktop layouts stable.
   loadStyle('./professional-polish.css?v=4', 'professional-polish').catch((e) => console.warn('Professional styles:', e));
   loadStyle('./mobile-responsive.css?v=2', 'mobile-responsive').catch((e) => console.warn('Mobile styles:', e));
   loadStyle('./viewport-compat.css?v=1', 'viewport-compat').catch((e) => console.warn('Viewport styles:', e));
@@ -53,22 +69,15 @@
     return poster;
   };
 
-  if (!originalMode) {
+  if (dynamicMode) {
     showPoster();
     const themePromise = loadScript('./theme.js?v=15').catch((e) => {
       console.warn('Theme engine:', e);
       throw e;
     });
-
     loadScript('./font-curator.js?v=7').catch((e) => console.warn('Font engine:', e));
-
-    themePromise
-      .then(() => loadStyle('./theme-panels.css?v=2', 'theme-panels'))
-      .catch((e) => console.warn('Theme panel engine:', e));
-
-    loadScript('./vendor/galaxy.min.js?v=3.4.0')
-      .then(() => loadScript('./galaxy-background.js?v=5'))
-      .catch((e) => console.warn('GalaxyJS background engine:', e));
+    themePromise.then(() => loadStyle('./theme-panels.css?v=2', 'theme-panels')).catch((e) => console.warn('Theme panel engine:', e));
+    loadScript('./vendor/galaxy.min.js?v=3.4.0').then(() => loadScript('./galaxy-background.js?v=5')).catch((e) => console.warn('GalaxyJS background engine:', e));
   }
 
   const views = [
@@ -146,9 +155,7 @@
   }
 
   function setNav(hash) {
-    document.querySelectorAll('.sidebar nav a').forEach((link) => {
-      link.classList.toggle('active', link.getAttribute('href') === hash);
-    });
+    document.querySelectorAll('.sidebar nav a').forEach((link) => link.classList.toggle('active', link.getAttribute('href') === hash));
   }
 
   function activate(hash) {
@@ -170,10 +177,7 @@
         event.preventDefault();
         show();
       }));
-      window.addEventListener('hashchange', guard(scope, () => {
-        if (location.hash === hash) show();
-        else hide();
-      }));
+      window.addEventListener('hashchange', guard(scope, () => location.hash === hash ? show() : hide()));
       if (location.hash === hash) guard(scope, show)();
     });
   }
@@ -184,10 +188,7 @@
 
   function panelVisibilityCSS() {
     return views.map(([, , bodyClass]) => {
-      const selectors = views
-        .filter((view) => view[2] !== bodyClass)
-        .map((view) => `body.${bodyClass} ${view[3]}`)
-        .join(',');
+      const selectors = views.filter((view) => view[2] !== bodyClass).map((view) => `body.${bodyClass} ${view[3]}`).join(',');
       return selectors ? `${selectors}{display:none!important}` : '';
     }).join('');
   }
