@@ -16,20 +16,25 @@
   const originalLoad = !previousStart || (now - previousStart) >= FIVE_MINUTES;
 
   if (originalLoad) {
-    // This load is the fresh/original state. Restart the 5-minute window.
     sessionStorage.setItem(tabStartedKey, String(now));
   }
 
-  // Only load the dynamic engines for a normal reload within the active window.
-  // This makes browser reload / Ctrl+R / Ctrl+Shift+R follow the same decision.
+  // Dynamic engines are loaded only after the first/original visit.
   if (!originalLoad) {
     const themeScript = document.createElement('script');
-    themeScript.src = './theme.js?v=8';
+    themeScript.src = './theme.js?v=9';
     themeScript.async = false;
     document.head.appendChild(themeScript);
 
+    // Apply the curated typography after the theme engine finishes. This
+    // replaces the visually redundant legacy font profiles with distinct ones.
+    const fontScript = document.createElement('script');
+    fontScript.src = './font-curator.js?v=1';
+    fontScript.async = false;
+    document.head.appendChild(fontScript);
+
     const backgroundScript = document.createElement('script');
-    backgroundScript.src = './background.js?v=6';
+    backgroundScript.src = './background.js?v=7';
     backgroundScript.async = false;
     document.head.appendChild(backgroundScript);
   }
@@ -75,8 +80,6 @@
 
       magic.addEventListener('click', guard('magic reload', (event) => {
         event.preventDefault();
-        // Make the upcoming reload a normal in-window dynamic load.
-        // Resetting the timestamp also works after the 5-minute window expires.
         sessionStorage.setItem(tabStartedKey, String(Date.now()));
         window.location.reload();
       }));
@@ -86,6 +89,16 @@
   }
 
   installMagicTab();
+
+  function loadAboutResponsiveFix() {
+    const existing = document.getElementById('about-responsive-fix');
+    if (existing) existing.remove();
+    const link = document.createElement('link');
+    link.id = 'about-responsive-fix';
+    link.rel = 'stylesheet';
+    link.href = './about-responsive-fix.css?v=1';
+    document.head.appendChild(link);
+  }
 
   function injectStyle(id, css) {
     document.getElementById(id)?.remove();
@@ -97,16 +110,6 @@
     if (polish) document.head.appendChild(polish);
     loadAboutResponsiveFix();
     return style;
-  }
-
-  function loadAboutResponsiveFix() {
-    const existing = document.getElementById('about-responsive-fix');
-    if (existing) existing.remove();
-    const link = document.createElement('link');
-    link.id = 'about-responsive-fix';
-    link.rel = 'stylesheet';
-    link.href = './about-responsive-fix.css?v=1';
-    document.head.appendChild(link);
   }
 
   function renderPanel({ id, className, html, styleId, css, parent = '.content', scope = id }) {
