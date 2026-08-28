@@ -2,16 +2,66 @@
   const diagnostics = window.portfolioDiagnostics;
   const guard = (scope, fn) => (diagnostics ? diagnostics.guard(scope, fn) : fn);
 
+  // First-ever load stays on the original portfolio design. Dynamic theme,
+  // typography, and background begin from the second load onward.
+  const loadKey = 'portfolio:dynamic-started';
+  const firstLoad = localStorage.getItem(loadKey) !== '1';
+  if (firstLoad) localStorage.setItem(loadKey, '1');
+
   // Load theme first, then the procedural background engine before dynamic views.
   const themeScript = document.createElement('script');
-  themeScript.src = './theme.js?v=3';
+  themeScript.src = './theme.js?v=4';
   themeScript.async = false;
   document.head.appendChild(themeScript);
 
   const backgroundScript = document.createElement('script');
-  backgroundScript.src = './background.js?v=1';
+  backgroundScript.src = './background.js?v=2';
   backgroundScript.async = false;
   document.head.appendChild(backgroundScript);
+
+  function restoreOriginalDesign() {
+    if (!firstLoad) return;
+
+    // theme.js / background.js may already have executed before shared.js
+    // reaches DOMContentLoaded, so restore the original presentation after
+    // all synchronous startup scripts have settled.
+    const restore = () => {
+      document.getElementById('dynamic-theme-style')?.remove();
+      document.getElementById('dynamic-background-style')?.remove();
+      document.getElementById('dynamic-bg')?.remove();
+
+      const molecule = document.getElementById('molecule-bg');
+      if (molecule) {
+        molecule.style.removeProperty('opacity');
+        molecule.style.removeProperty('visibility');
+        molecule.style.removeProperty('filter');
+      }
+
+      document.documentElement.removeAttribute('data-theme');
+      document.documentElement.removeAttribute('data-geometry');
+      document.documentElement.removeAttribute('data-font');
+
+      [
+        '--theme-bg','--theme-surface','--theme-surface-2','--theme-text','--theme-muted',
+        '--theme-primary','--theme-secondary','--theme-tertiary','--theme-glow','--theme-radius',
+        '--theme-panel-radius','--theme-hue','--theme-font-body','--theme-font-heading',
+        '--theme-font-mono','--theme-font-weight','--theme-heading-weight','--theme-font-tracking',
+        '--black','--white','--muted','--cyan','--violet','--pink','--surface-0','--surface-1',
+        '--surface-2','--surface-3','--text','--text-soft','--text-muted'
+      ].forEach((name) => document.documentElement.style.removeProperty(name));
+
+      delete window.portfolioTheme;
+      delete window.portfolioBackground;
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => setTimeout(restore, 0), { once:true });
+    } else {
+      setTimeout(restore, 0);
+    }
+  }
+
+  restoreOriginalDesign();
 
   const VIEWS = [
     { view:'home',         hash:'#home',        bodyClass:'home-active',        selector:'.hero' },
