@@ -36,24 +36,6 @@
     return guard(scope, fn)();
   }
 
-  function loadScript(src, { dataset = {}, defer = true } = {}) {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = src;
-      script.defer = defer;
-      Object.entries(dataset).forEach(([key, value]) => {
-        script.dataset[key] = value;
-      });
-      script.addEventListener('load', () => resolve(script), { once: true });
-      script.addEventListener(
-        'error',
-        () => reject(new Error(`Failed to load script "${src}"`)),
-        { once: true },
-      );
-      document.body.appendChild(script);
-    });
-  }
-
   window.addEventListener('error', (event) => {
     const target = event.target;
     if (target && target !== window && target.tagName) {
@@ -75,6 +57,5 @@
     reportMissing,
     guard,
     run,
-    loadScript,
   };
 })();
