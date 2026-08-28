@@ -2,38 +2,36 @@
   const diagnostics = window.portfolioDiagnostics;
   const guard = (scope, fn) => (diagnostics ? diagnostics.guard(scope, fn) : fn);
 
-  // First visit in a tab is always the original design. A brand-new tab also
-  // starts original. After five minutes without a visit, that tab is treated
-  // as new again. Otherwise reloads use the randomized engines.
-  const sessionKey = 'portfolio:tab-visit-start';
-  const dynamicKey = 'portfolio:dynamic-started';
-  const FIVE_MINUTES = 5 * 60 * 1000;
+  // Visit lifecycle:
+  // - A brand-new tab always starts with the original design.
+  // - Reloads in that tab become dynamic immediately after the first load.
+  // - If the tab is opened/reloaded after 5 minutes from the tab's start,
+  //   that load becomes original again and starts a fresh 5-minute window.
+  // sessionStorage is intentionally used so a new tab has its own lifecycle.
+  const tabStartedKey = 'portfolio:tab-started-at';
   const now = Date.now();
-  const previousStart = Number.parseInt(sessionStorage.getItem(sessionKey) || '0', 10);
-  const staleTab = !previousStart || (now - previousStart) >= FIVE_MINUTES;
-  const firstLoad = staleTab || sessionStorage.getItem(dynamicKey) !== '1';
+  const FIVE_MINUTES = 5 * 60 * 1000;
+  const previousStart = Number.parseInt(sessionStorage.getItem(tabStartedKey) || '0', 10);
+  const originalLoad = !previousStart || (now - previousStart) >= FIVE_MINUTES;
 
-  if (firstLoad) {
-    sessionStorage.setItem(sessionKey, String(now));
-    sessionStorage.removeItem(dynamicKey);
+  if (originalLoad) {
+    // This load is the fresh/original state. Restart the 5-minute window.
+    sessionStorage.setItem(tabStartedKey, String(now));
   }
 
-  // Do not load dynamic engines on the first/new/stale visit. This guarantees
-  // the original design is the only design shown for that opening.
-  if (!firstLoad) {
+  // Only load the dynamic engines for a normal reload within the active window.
+  // This makes browser reload / Ctrl+R / Ctrl+Shift+R follow the same decision.
+  if (!originalLoad) {
     const themeScript = document.createElement('script');
-    themeScript.src = './theme.js?v=6';
+    themeScript.src = './theme.js?v=7';
     themeScript.async = false;
     document.head.appendChild(themeScript);
 
     const backgroundScript = document.createElement('script');
-    backgroundScript.src = './background.js?v=4';
+    backgroundScript.src = './background.js?v=5';
     backgroundScript.async = false;
     document.head.appendChild(backgroundScript);
   }
-
-  // The current original visit is now complete; its next reload becomes dynamic.
-  if (firstLoad) sessionStorage.setItem(dynamicKey, '1');
 
   const VIEWS = [
     { view:'home',         hash:'#home',        bodyClass:'home-active',        selector:'.hero' },
