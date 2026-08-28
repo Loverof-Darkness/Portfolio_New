@@ -11,10 +11,6 @@
   window.__PORTFOLIO_DYNAMIC_MODE = dynamicMode;
   if (originalMode) sessionStorage.setItem(startedKey, String(now));
 
-  // In dynamic mode script.js still contains the legacy molecule renderer.
-  // Its canvas is removed, but its animation callback would otherwise keep
-  // scheduling empty frames forever. Block only callbacks belonging to that
-  // legacy renderer; GalaxyJS animation callbacks remain untouched.
   if (dynamicMode) {
     const nativeRequestAnimationFrame = window.requestAnimationFrame.bind(window);
     window.requestAnimationFrame = (callback) => {
@@ -49,9 +45,10 @@
     document.head.appendChild(link);
   });
 
-  loadStyle('./professional-polish.css?v=4', 'professional-polish').catch((e) => console.warn('Professional styles:', e));
-  loadStyle('./mobile-responsive.css?v=2', 'mobile-responsive').catch((e) => console.warn('Mobile styles:', e));
-  loadStyle('./viewport-compat.css?v=1', 'viewport-compat').catch((e) => console.warn('Viewport styles:', e));
+  loadStyle('./professional-polish.css?v=5', 'professional-polish').catch((e) => console.warn('Professional styles:', e));
+  loadStyle('./mobile-responsive.css?v=3', 'mobile-responsive').catch((e) => console.warn('Mobile styles:', e));
+  loadStyle('./viewport-compat.css?v=2', 'viewport-compat').catch((e) => console.warn('Viewport styles:', e));
+  loadStyle('./heading-consistency.css?v=1', 'heading-consistency').catch((e) => console.warn('Heading consistency:', e));
 
   const showPoster = () => {
     const existing = document.getElementById('galaxy-dynamic-bg');
@@ -129,6 +126,8 @@
     loadAboutFix().catch((e) => console.warn('About responsive styles:', e));
     const themePanels = document.getElementById('theme-panels');
     if (themePanels) document.head.appendChild(themePanels);
+    const headingConsistency = document.getElementById('heading-consistency');
+    if (headingConsistency) document.head.appendChild(headingConsistency);
     return style;
   }
 
