@@ -7,6 +7,7 @@
   // - Reloads in that tab become dynamic immediately after the first load.
   // - If the tab is opened/reloaded after 5 minutes from the tab's start,
   //   that load becomes original again and starts a fresh 5-minute window.
+  // - The "OPEN THE MULTIVERSE" control can explicitly trigger a dynamic reload.
   // sessionStorage is intentionally used so a new tab has its own lifecycle.
   const tabStartedKey = 'portfolio:tab-started-at';
   const now = Date.now();
@@ -23,12 +24,12 @@
   // This makes browser reload / Ctrl+R / Ctrl+Shift+R follow the same decision.
   if (!originalLoad) {
     const themeScript = document.createElement('script');
-    themeScript.src = './theme.js?v=7';
+    themeScript.src = './theme.js?v=8';
     themeScript.async = false;
     document.head.appendChild(themeScript);
 
     const backgroundScript = document.createElement('script');
-    backgroundScript.src = './background.js?v=5';
+    backgroundScript.src = './background.js?v=6';
     backgroundScript.async = false;
     document.head.appendChild(backgroundScript);
   }
@@ -52,15 +53,39 @@
     }
   }
 
-  function loadAboutResponsiveFix() {
-    const existing = document.getElementById('about-responsive-fix');
-    if (existing) existing.remove();
-    const link = document.createElement('link');
-    link.id = 'about-responsive-fix';
-    link.rel = 'stylesheet';
-    link.href = './about-responsive-fix.css?v=1';
-    document.head.appendChild(link);
+  function installMagicTab() {
+    onReady(() => {
+      const nav = document.querySelector('.sidebar nav');
+      if (!nav || nav.querySelector('[data-magic-reload="true"]')) return;
+
+      const magic = document.createElement('a');
+      magic.href = '#magic';
+      magic.dataset.magicReload = 'true';
+      magic.setAttribute('aria-label', 'Open the Multiverse');
+      magic.title = 'Open the Multiverse';
+      magic.innerHTML = `
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"></circle>
+          <ellipse cx="12" cy="12" rx="9" ry="4.2" transform="rotate(-25 12 12)"></ellipse>
+          <ellipse cx="12" cy="12" rx="9" ry="4.2" transform="rotate(25 12 12)"></ellipse>
+          <circle cx="18.9" cy="7.2" r="1.15" fill="currentColor" stroke="none"></circle>
+        </svg>
+        <span>OPEN THE MULTIVERSE</span>
+      `;
+
+      magic.addEventListener('click', guard('magic reload', (event) => {
+        event.preventDefault();
+        // Make the upcoming reload a normal in-window dynamic load.
+        // Resetting the timestamp also works after the 5-minute window expires.
+        sessionStorage.setItem(tabStartedKey, String(Date.now()));
+        window.location.reload();
+      }));
+
+      nav.appendChild(magic);
+    });
   }
+
+  installMagicTab();
 
   function injectStyle(id, css) {
     document.getElementById(id)?.remove();
@@ -72,6 +97,16 @@
     if (polish) document.head.appendChild(polish);
     loadAboutResponsiveFix();
     return style;
+  }
+
+  function loadAboutResponsiveFix() {
+    const existing = document.getElementById('about-responsive-fix');
+    if (existing) existing.remove();
+    const link = document.createElement('link');
+    link.id = 'about-responsive-fix';
+    link.rel = 'stylesheet';
+    link.href = './about-responsive-fix.css?v=1';
+    document.head.appendChild(link);
   }
 
   function renderPanel({ id, className, html, styleId, css, parent = '.content', scope = id }) {
