@@ -170,5 +170,3 @@ function renderArsenalIfActive() {
 
 renderArsenalIfActive();
 window.addEventListener('hashchange', renderArsenalIfActive);
-setTimeout(renderArsenalIfActive, 100);
-setTimeout(renderArsenalIfActive, 400);
