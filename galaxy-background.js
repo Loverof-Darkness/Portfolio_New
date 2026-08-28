@@ -58,6 +58,35 @@
     return getComputedStyle(root).getPropertyValue(name).trim() || fallback;
   }
 
+  function isSmallViewport() {
+    return window.matchMedia('(max-width: 760px)').matches;
+  }
+
+  function getPerformanceOverrides() {
+    const small = isSmallViewport();
+    const tablet = window.matchMedia('(max-width: 1100px)').matches;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const overrides = {};
+
+    if (selected.type === 'spiralForge') {
+      overrides.stars = reducedMotion ? 18000 : small ? 32000 : tablet ? 70000 : 110000;
+      overrides.speed = reducedMotion ? 0.12 : selected.options.speed;
+    }
+
+    if (reducedMotion) {
+      overrides.speed = Math.min(Number.isFinite(selected.options.speed) ? selected.options.speed : 0.5, 0.22);
+    } else if (small) {
+      if (typeof overrides.density === 'undefined' && 'density' in selected.options) {
+        overrides.density = Math.min(selected.options.density, 0.56);
+      }
+      if (typeof overrides.speed === 'undefined' && 'speed' in selected.options) {
+        overrides.speed = Math.min(selected.options.speed, 0.85);
+      }
+    }
+
+    return overrides;
+  }
+
   function ensureHost() {
     let host = document.getElementById('galaxy-dynamic-bg');
     if (!host) {
@@ -67,7 +96,7 @@
       document.body.prepend(host);
     }
     host.innerHTML = '';
-    host.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none;overflow:hidden;background:var(--theme-bg,#05070A)';
+    host.style.cssText = 'position:fixed;inset:0;width:100vw;height:100dvh;z-index:0;pointer-events:none;overflow:hidden;background:var(--theme-bg,#05070A);contain:strict;isolation:isolate';
     return host;
   }
 
@@ -93,6 +122,7 @@
       background: color('--theme-bg', '#05070A'),
       colors: [color('--theme-primary', '#67E8F9'), color('--theme-secondary', '#A78BFA'), color('--theme-tertiary', '#F9A8D4')],
       ...selected.options,
+      ...getPerformanceOverrides(),
     };
 
     try {
