@@ -35,8 +35,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p vendor
-          curl -fsSL https://cdn.jsdelivr.net/npm/galaxyjs@3.4.0/galaxy.min.js \
-            -o vendor/galaxy.min.js
+         curl -fsSL https://raw.githubusercontent.com/Edwson/GalaxyJS/main/galaxy.min.js \
+  -o vendor/galaxy.min.js
           curl -fsSL https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.min.js \
             -o vendor/three.module.min.js
           test -s vendor/galaxy.min.js
