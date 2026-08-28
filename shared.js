@@ -52,6 +52,16 @@
     }
   }
 
+  function loadAboutResponsiveFix() {
+    const existing = document.getElementById('about-responsive-fix');
+    if (existing) existing.remove();
+    const link = document.createElement('link');
+    link.id = 'about-responsive-fix';
+    link.rel = 'stylesheet';
+    link.href = './about-responsive-fix.css?v=1';
+    document.head.appendChild(link);
+  }
+
   function injectStyle(id, css) {
     document.getElementById(id)?.remove();
     const style = document.createElement('style');
@@ -60,6 +70,7 @@
     document.head.appendChild(style);
     const polish = document.getElementById('professional-polish');
     if (polish) document.head.appendChild(polish);
+    loadAboutResponsiveFix();
     return style;
   }
 
