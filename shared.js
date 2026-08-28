@@ -9,6 +9,7 @@
   const dynamicMode = !originalMode;
 
   window.__PORTFOLIO_DYNAMIC_MODE = dynamicMode;
+  document.documentElement.dataset.portfolioMode = dynamicMode ? 'dynamic' : 'original';
   if (originalMode) sessionStorage.setItem(startedKey, String(now));
 
   if (dynamicMode) {
@@ -49,6 +50,7 @@
   loadStyle('./mobile-responsive.css?v=3', 'mobile-responsive').catch((e) => console.warn('Mobile styles:', e));
   loadStyle('./viewport-compat.css?v=2', 'viewport-compat').catch((e) => console.warn('Viewport styles:', e));
   loadStyle('./heading-consistency.css?v=1', 'heading-consistency').catch((e) => console.warn('Heading consistency:', e));
+  if (dynamicMode) loadStyle('./dynamic-compact.css?v=1', 'dynamic-compact').catch((e) => console.warn('Dynamic compact styles:', e));
 
   const showPoster = () => {
     const existing = document.getElementById('galaxy-dynamic-bg');
@@ -128,6 +130,8 @@
     if (themePanels) document.head.appendChild(themePanels);
     const headingConsistency = document.getElementById('heading-consistency');
     if (headingConsistency) document.head.appendChild(headingConsistency);
+    const dynamicCompact = document.getElementById('dynamic-compact');
+    if (dynamicCompact) document.head.appendChild(dynamicCompact);
     return style;
   }
 
