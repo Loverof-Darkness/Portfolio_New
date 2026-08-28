@@ -1,10 +1,10 @@
 /* Final shared heading system.
-   Loaded after section-specific styles so every major tab heading follows one
-   consistent scale while remaining visible on narrow and short viewports. */
+   Keep every tab heading visually consistent without making panels taller.
+   This layer is intentionally compact and wins over section-specific sizes. */
 
 :root {
-  --section-heading-size: clamp(44px, 4.8vw, 68px);
-  --section-heading-line: .98;
+  --section-heading-size: clamp(46px, 4.2vw, 60px);
+  --section-heading-line: .94;
   --section-heading-weight: 825;
 }
 
@@ -15,17 +15,28 @@
 .publication-heading,
 .beyond-header h2,
 .connect-header h2 {
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
   font-size: var(--section-heading-size) !important;
   line-height: var(--section-heading-line) !important;
   font-weight: var(--section-heading-weight) !important;
   letter-spacing: -.045em !important;
-  max-width: 100% !important;
-  width: 100% !important;
+  white-space: normal !important;
   overflow: visible !important;
   overflow-wrap: anywhere !important;
   word-break: normal !important;
   hyphens: none !important;
   text-wrap: balance !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .about-panel,
@@ -43,53 +54,49 @@
 .about-panel > .about-heading,
 .experience-panel .experience-heading,
 .arsenal-rebuild .arsenal-rebuild-header,
+.arsenal-rebuild .arsenal-rebuild-header h2,
 .education-panel .education-header,
+.education-panel .education-header h2,
 .publication-panel .publication-heading,
 .beyond-panel .beyond-header,
+.beyond-panel .beyond-header h2,
 .connect-panel .connect-header,
-#connect-panel .connect-header {
+#connect-panel .connect-header,
+#connect-panel .connect-header h2 {
   min-width: 0 !important;
   max-width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
   overflow: visible !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
-/* Prevent short desktop viewports from clipping the heading block. */
+/* Compact desktop/laptop scale: keep the complete heading block visible. */
 @media (min-width: 761px) and (max-height: 760px) {
   :root {
-    --section-heading-size: clamp(40px, 5vw, 60px);
+    --section-heading-size: clamp(40px, 4vw, 54px);
   }
 }
 
-/* One consistent mobile heading size for every tab. */
+/* One consistent, compact mobile heading scale. */
 @media (max-width: 760px) {
   :root {
-    --section-heading-size: clamp(38px, 12vw, 52px);
-    --section-heading-line: .96;
-  }
-
-  .about-heading,
-  .experience-heading,
-  .arsenal-rebuild-header h2,
-  .education-header h2,
-  .publication-heading,
-  .beyond-header h2,
-  .connect-header h2 {
-    font-size: var(--section-heading-size) !important;
-    line-height: var(--section-heading-line) !important;
-    padding-inline: 0 !important;
-    margin-inline: 0 !important;
+    --section-heading-size: clamp(32px, 10vw, 44px);
+    --section-heading-line: .95;
   }
 }
 
 @media (max-width: 420px) {
   :root {
-    --section-heading-size: clamp(34px, 11.5vw, 44px);
+    --section-heading-size: clamp(30px, 9.8vw, 38px);
   }
 }
 
 @media (max-width: 360px) {
   :root {
-    --section-heading-size: 34px;
+    --section-heading-size: 30px;
   }
 }
 
