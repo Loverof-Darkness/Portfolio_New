@@ -31,10 +31,11 @@
     document.head.appendChild(link);
   });
 
-  // Base styles are intentionally loaded once. Mobile overrides are also loaded
-  // globally so a first/original visit is responsive too.
-  loadStyle('./professional-polish.css?v=3', 'professional-polish').catch((e) => console.warn('Professional styles:', e));
+  // Load responsive layers once for every device class, including the original
+  // first-open experience. This keeps mobile and short-desktop layouts stable.
+  loadStyle('./professional-polish.css?v=4', 'professional-polish').catch((e) => console.warn('Professional styles:', e));
   loadStyle('./mobile-responsive.css?v=2', 'mobile-responsive').catch((e) => console.warn('Mobile styles:', e));
+  loadStyle('./viewport-compat.css?v=1', 'viewport-compat').catch((e) => console.warn('Viewport styles:', e));
 
   const showPoster = () => {
     const existing = document.getElementById('galaxy-dynamic-bg');
@@ -54,8 +55,10 @@
 
   if (!originalMode) {
     showPoster();
-    const themePromise = loadScript('./theme.js?v=15')
-      .catch((e) => { console.warn('Theme engine:', e); throw e; });
+    const themePromise = loadScript('./theme.js?v=15').catch((e) => {
+      console.warn('Theme engine:', e);
+      throw e;
+    });
 
     loadScript('./font-curator.js?v=7').catch((e) => console.warn('Font engine:', e));
 
