@@ -2,21 +2,26 @@
   const diagnostics = window.portfolioDiagnostics;
   const guard = (scope, fn) => (diagnostics ? diagnostics.guard(scope, fn) : fn);
 
-  // Load the randomized theme engine before the other dynamically rendered views.
+  // Load theme first, then the procedural background engine before dynamic views.
   const themeScript = document.createElement('script');
-  themeScript.src = './theme.js?v=2';
+  themeScript.src = './theme.js?v=3';
   themeScript.async = false;
   document.head.appendChild(themeScript);
+
+  const backgroundScript = document.createElement('script');
+  backgroundScript.src = './background.js?v=1';
+  backgroundScript.async = false;
+  document.head.appendChild(backgroundScript);
 
   const VIEWS = [
     { view:'home',         hash:'#home',        bodyClass:'home-active',        selector:'.hero' },
     { view:'about',        hash:'#about',       bodyClass:'about-active',       selector:'.about-panel' },
     { view:'experience',   hash:'#experience',  bodyClass:'experience-active',  selector:'.experience-panel' },
     { view:'arsenal',      hash:'#arsenal',     bodyClass:'arsenal-active',     selector:'.arsenal-rebuild' },
-    { view:'education',    hash:'#education',   bodyClass:'education-active',   selector:'#education' },
+    { view:'education',    hash:'#education',   bodyClass:'education-active',  selector:'#education' },
     { view:'publications', hash:'#publications',bodyClass:'publication-active', selector:'#publications' },
     { view:'beyond',       hash:'#beyond',      bodyClass:'beyond-active',      selector:'#beyond' },
-    { view:'connect',      hash:'#connect',     bodyClass:'connect-active',     selector:'#connect-panel' },
+    { view:'connect',      hash:'#connect',     bodyClass:'connect-active',    selector:'#connect-panel' },
   ];
 
   function onReady(fn) {
