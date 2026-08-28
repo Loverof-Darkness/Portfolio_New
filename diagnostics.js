@@ -2,49 +2,6 @@
   const PREFIX = '[portfolio]';
   const warnedOnce = new Set();
 
-  // In dynamic mode, the legacy molecule renderer is unnecessary because
-  // GalaxyJS owns the background. Prevent its animation loop from consuming
-  // CPU/GPU time while preserving the original molecule background on a
-  // genuinely fresh/original tab load.
-  (() => {
-    try {
-      const started = Number.parseInt(sessionStorage.getItem('portfolio:tab-started-at') || '0', 10);
-      const dynamicMode = Boolean(started) && (Date.now() - started) < (5 * 60 * 1000);
-      window.__PORTFOLIO_DYNAMIC_MODE = dynamicMode;
-
-      if (!dynamicMode) return;
-
-      const nativeGetContext = HTMLCanvasElement.prototype.getContext;
-      HTMLCanvasElement.prototype.getContext = function guardedGetContext(...args) {
-        if (this && this.id === 'molecule-bg') return null;
-        return nativeGetContext.apply(this, args);
-      };
-
-      const nativeRequestAnimationFrame = window.requestAnimationFrame.bind(window);
-      window.requestAnimationFrame = function guardedRequestAnimationFrame(callback) {
-        if (typeof callback === 'function') {
-          let source = '';
-          try { source = Function.prototype.toString.call(callback); } catch (_) {}
-          if (source.includes('drawBackground()') && source.includes('drawBonds()')) {
-            return 0;
-          }
-        }
-        return nativeRequestAnimationFrame(callback);
-      };
-
-      const style = document.createElement('style');
-      style.id = 'legacy-background-performance-guard';
-      style.textContent = '#molecule-bg{display:none!important;visibility:hidden!important;pointer-events:none!important}';
-      document.head.appendChild(style);
-
-      document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('molecule-bg')?.remove();
-      }, { once: true });
-    } catch (_) {
-      // Performance protection is optional; never block normal site startup.
-    }
-  })();
-
   function toError(value, fallbackMessage) {
     if (value instanceof Error) return value;
     if (typeof value === 'string') return new Error(value);
@@ -66,74 +23,58 @@
 
   function guard(scope, fn) {
     return function guarded(...args) {
-      try { return fn.apply(this, args); }
-      catch (error) { reportError(scope, error); return undefined; }
+      try {
+        return fn.apply(this, args);
+      } catch (error) {
+        reportError(scope, error);
+        return undefined;
+      }
     };
   }
 
-  function run(scope, fn) { return guard(scope, fn)(); }
+  function run(scope, fn) {
+    return guard(scope, fn)();
+  }
 
   function loadScript(src, { dataset = {}, defer = true } = {}) {
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = src;
       script.defer = defer;
-      Object.entries(dataset).forEach(([key, value]) => { script.dataset[key] = value; });
+      Object.entries(dataset).forEach(([key, value]) => {
+        script.dataset[key] = value;
+      });
       script.addEventListener('load', () => resolve(script), { once: true });
-      script.addEventListener('error', () => reject(new Error(`Failed to load script "${src}"`)), { once: true });
+      script.addEventListener(
+        'error',
+        () => reject(new Error(`Failed to load script "${src}"`)),
+        { once: true },
+      );
       document.body.appendChild(script);
     });
   }
-
-  function loadStylesheet(href, id) {
-    if (document.getElementById(id)) return;
-    const link = document.createElement('link');
-    link.id = id;
-    link.rel = 'stylesheet';
-    link.href = href;
-    document.head.appendChild(link);
-  }
-
-  function installHeroCleanup() {
-    if (document.getElementById('hero-cleanup-style')) return;
-    const style = document.createElement('style');
-    style.id = 'hero-cleanup-style';
-    style.textContent = `
-      /* Remove the framed/window-like backdrop behind the hero portrait. */
-      .hero .portrait-wrap::before,
-      .hero .portrait-wrap::after {
-        display: none !important;
-        content: none !important;
-        border: 0 !important;
-        background: transparent !important;
-        box-shadow: none !important;
-      }
-      .hero .portrait-wrap {
-        background: transparent !important;
-        border: 0 !important;
-        box-shadow: none !important;
-        clip-path: none !important;
-      }
-      .hero .portrait-glow {
-        opacity: .72 !important;
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  loadStylesheet('./professional-polish.css?v=2', 'professional-polish');
-  installHeroCleanup();
 
   window.addEventListener('error', (event) => {
     const target = event.target;
     if (target && target !== window && target.tagName) {
       const url = target.currentSrc || target.src || target.href || '(unknown url)';
-      console.error(`${PREFIX} resource <${target.tagName.toLowerCase()}> failed to load: ${url}`);
+      console.error(
+        `${PREFIX} resource <${target.tagName.toLowerCase()}> failed to load: ${url}`,
+      );
       return;
     }
     reportError('uncaught error', event.error || event.message);
   }, true);
 
-  window.addEventListener('unhandledrejection', (event) => { reportError('unhandled promise rejection', event.reason); });
-  window.portfolioDiagnostics = { reportError, reportMissing, guard, run, loadScript };
+  window.addEventListener('unhandledrejection', (event) => {
+    reportError('unhandled promise rejection', event.reason);
+  });
+
+  window.portfolioDiagnostics = {
+    reportError,
+    reportMissing,
+    guard,
+    run,
+    loadScript,
+  };
 })();
